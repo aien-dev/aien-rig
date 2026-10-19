@@ -137,6 +137,7 @@ fn gpu_selftest() {
         "tool": "rig-listen gpu-selftest",
         "git_sha": option_env!("RIG_GIT_SHA").unwrap_or("unknown"),
         "omega_gpu_lib": option_env!("RIG_OMEGA_GPU_LIB"),
+        "omega_git_sha": option_env!("RIG_OMEGA_GIT_SHA"),
         "threads": rayon::current_num_threads(),
         "load_average_at_end": std::fs::read_to_string("/proc/loadavg").ok().map(|s| s.trim().to_string()),
         "results": results
@@ -265,6 +266,7 @@ fn main() {
             "backend": format!("{backend:?}").to_lowercase(),
             "decoder_on_gpu": m.decoder_on_gpu,
             "omega_gpu_lib": option_env!("RIG_OMEGA_GPU_LIB"),
+            "omega_git_sha": option_env!("RIG_OMEGA_GIT_SHA"),
             "threads": rayon::current_num_threads(),
             "load_average_at_end": std::fs::read_to_string("/proc/loadavg").ok().map(|s| s.trim().to_string()),
             "model_dir": model_dir.display().to_string(),
