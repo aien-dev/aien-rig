@@ -1,0 +1,23 @@
+{
+  "schema": "aien-rig-transcript/1",
+  "language": "en",
+  "duration": 478,
+  "source": "castle-build (self-made sample)",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 5.8,
+      "text": "What's up everybody, welcome back to the channel. Today we are building a full castle in survival, no creative mode."
+    },
+    {
+      "start": 6.0,
+      "end": 11.8,
+      "text": "And um, I gave myself one rule. I only get three in-game days to finish it."
+    },
+    {
+      "start": 12.0,
+      "end": 17.8,
+      "text": "If the sun comes up on day four and the castle isn't done, I tear the whole thing down."
+    }
+  ]
+}

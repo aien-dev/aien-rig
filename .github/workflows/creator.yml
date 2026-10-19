@@ -1,0 +1,48 @@
+name: creator
+
+on:
+  push:
+    branches: [main, "creator/**"]
+    paths: ["creator/**", ".github/workflows/creator.yml"]
+  pull_request:
+    paths: ["creator/**", ".github/workflows/creator.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: cargo test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: creator
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          cargo --version
+      - name: Test
+        run: cargo test --locked
+      - name: Build release
+        run: cargo build --locked --release
+      - name: Smoke test (captions only, no model needed)
+        shell: bash
+        run: |
+          ./target/release/rig-create samples/castle-build.srt --captions-only --out target/smoke
+          test -s target/smoke/captions.clean.srt
+          grep -q "{um}" target/smoke/captions.marked.srt
+      - name: Keep the Windows binary
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rig-create-windows
+          path: creator/target/release/rig-create.exe
+          retention-days: 14

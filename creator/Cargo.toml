@@ -1,0 +1,28 @@
+[package]
+name = "aien-rig-creator"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+description = "AIEN Rig YouTube helper: titles, description with chapters, tags, Shorts picks and cleaned captions from a video transcript, using a local OpenAI-style model server"
+repository = "https://github.com/aien-dev/aien-rig"
+readme = "README.md"
+rust-version = "1.75"
+
+[lib]
+name = "aien_rig_creator"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rig-create"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Plain HTTP only by default: the model server runs on the same PC.
+# Build with `--features tls` to reach an https server.
+ureq = { version = "2.12", default-features = false }
+
+[features]
+default = []
+tls = ["ureq/tls"]
