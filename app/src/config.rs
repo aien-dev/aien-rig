@@ -21,9 +21,12 @@ pub struct Config {
     pub games: Vec<String>,
     /// While a game runs: pause the engine and make sure Windows Game Mode is on.
     pub auto_game_mode: bool,
-    /// Arguments passed to rig-tune.exe for each button. `{game}` is replaced.
+    /// Arguments passed to rig-tune.exe for each button. `{game}` is replaced
+    /// by the game's program name (for example cs2.exe).
     pub tune_scan: Vec<String>,
+    pub tune_games: Vec<String>,
     pub tune_measure: Vec<String>,
+    pub tune_apply_preview: Vec<String>,
     pub tune_apply: Vec<String>,
     pub tune_undo: Vec<String>,
     /// Run by the game watcher when a game starts / ends (the tuner's own
@@ -62,10 +65,14 @@ impl Default for Config {
                 "Overwatch.exe",
             ]),
             auto_game_mode: true,
+            // Matches the rig-tune CLI on tuner/v0 (clap, src/main.rs).
             tune_scan: v(&["scan", "--json"]),
+            tune_games: v(&["games", "--json"]),
             tune_measure: v(&["measure", "{game}", "--json"]),
-            tune_apply: v(&["apply", "{game}", "--json"]),
-            tune_undo: v(&["undo", "--json"]),
+            tune_apply_preview: v(&["apply", "--dry-run"]),
+            // The page asks first; the tool has no keyboard to ask with.
+            tune_apply: v(&["apply", "--yes"]),
+            tune_undo: v(&["undo", "--yes"]),
             tune_game_mode_on: v(&["game-mode", "on"]),
             tune_game_mode_off: v(&["game-mode", "off"]),
             create_args: v(&["{file}", "--server", "{server}", "--out", "{out}"]),

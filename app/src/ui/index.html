@@ -52,15 +52,19 @@
 <section id="play" class="on">
   <div class="card">
     <h2>FPS tuner</h2>
-    <p class="dim">Scan finds your games. Measure records how a game runs now. Apply makes only safe changes and keeps a receipt. Undo puts everything back.</p>
+    <p class="dim">1. Scan this PC: finds settings that cost frames. 2. Find games, pick one, start it, then Measure: counts its frames for a minute and saves a receipt. 3. Apply safe changes (you see the list first). 4. Measure again to compare. Undo everything puts it all back.</p>
     <div class="row">
-      <button class="act" data-tune="scan">Scan</button>
-      <select id="game"><option value="">(run Scan, or type a game below)</option></select>
-      <input type="text" id="gameText" placeholder="game name or program, e.g. cs2" style="min-width:200px">
-      <button class="act alt" data-tune="measure">Measure</button>
-      <button class="act alt" data-tune="apply">Apply</button>
+      <button class="act" data-tune="scan">Scan this PC</button>
+      <button class="act alt" data-tune="games">Find games</button>
+      <select id="game"><option value="">(Find games, or type the game's program below)</option></select>
+      <input type="text" id="gameText" placeholder="program name, e.g. cs2.exe" style="min-width:200px">
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="act alt" data-tune="measure">Measure (game must be running)</button>
+      <button class="act alt" data-tune="apply">Apply safe changes</button>
       <button class="act alt" data-tune="undo">Undo everything</button>
     </div>
+    <div id="findings"></div>
     <p id="tuneMsg" class="dim"></p>
     <pre id="tuneOut" hidden></pre>
   </div>
@@ -159,30 +163,65 @@ function busy(btns, on) { btns.forEach(b => b.disabled = on); }
 function gamesFrom(result) {
   if (!result) return [];
   const list = Array.isArray(result) ? result : (result.games || []);
-  return list.map(g => typeof g === "string" ? { id: g, label: g } : { id: g.id || g.exe || g.name, label: (g.name || g.id || g.exe) + (g.exe ? "  (" + g.exe + ")" : "") }).filter(g => g.id);
+  return list.map(g => {
+    if (typeof g === "string") return { id: g, label: g };
+    const exe = (g.exe_candidates && g.exe_candidates[0]) || g.exe || g.id;
+    return { id: exe, label: (g.name || exe) + (g.launcher ? "  [" + g.launcher + "]" : "") + (exe ? "  (" + exe + ")" : "  (program not found)") };
+  }).filter(g => g.id);
+}
+
+function renderFindings(result) {
+  const box = $("findings"); box.textContent = "";
+  if (!result || !Array.isArray(result.findings)) return;
+  const t = el("table");
+  result.findings.forEach(f => {
+    const tr = el("tr");
+    const st = String(f.status || "");
+    tr.appendChild(el("td", st === "Good" ? "OK" : st === "Problem" ? "FIX" : st === "Tip" ? "TIP" : "?", st === "Good" ? "ok" : st === "Problem" ? "bad" : "warn"));
+    tr.appendChild(el("td", (f.area ? f.area + ": " : "") + (f.what || "")));
+    tr.appendChild(el("td", st === "Good" ? "" : (f.fix || ""), "dim"));
+    t.appendChild(tr);
+  });
+  box.appendChild(t);
+}
+
+async function runTune(action, game) {
+  const all = [...document.querySelectorAll("[data-tune]")];
+  busy(all, true);
+  $("tuneMsg").textContent = action === "measure" ? "Measuring... play normally until it finishes (about a minute)." : "Running " + action + "...";
+  $("tuneMsg").className = "dim";
+  const j = await api("/api/tune", { action, game });
+  busy(all, false);
+  return j;
+}
+
+function showRun(j) {
+  if (j.error && j.exit_code === undefined) { $("tuneMsg").textContent = j.error; $("tuneMsg").className = "bad"; $("tuneOut").hidden = true; return false; }
+  $("tuneMsg").textContent = (j.ok ? "Done" : "Finished with a problem") + " in " + (j.seconds || 0).toFixed(1) + " s." + (j.receipt ? " Receipt: " + j.receipt : "");
+  $("tuneMsg").className = j.ok ? "ok" : "bad";
+  $("tuneOut").hidden = false;
+  $("tuneOut").textContent = j.result ? JSON.stringify(j.result, null, 2) : ((j.stdout || "") + (j.stderr ? "\n--- messages ---\n" + j.stderr : ""));
+  return true;
 }
 
 document.querySelectorAll("[data-tune]").forEach(b => b.onclick = async () => {
   const action = b.dataset.tune;
   const game = $("gameText").value.trim() || $("game").value;
+  if (action === "measure" && !game) { $("tuneMsg").textContent = "Pick a game first (Find games), or type its program name."; $("tuneMsg").className = "bad"; return; }
   if (action === "undo" && !confirm("Undo every change the tuner made?")) return;
-  const all = [...document.querySelectorAll("[data-tune]")];
-  busy(all, true);
-  $("tuneMsg").textContent = "Running " + action + "... (Measure can take a few minutes; keep the game open if it asks.)";
-  $("tuneMsg").className = "dim";
-  const j = await api("/api/tune", { action, game });
-  busy(all, false);
-  if (j.error && j.exit_code === undefined) { $("tuneMsg").textContent = j.error; $("tuneMsg").className = "bad"; $("tuneOut").hidden = true; return; }
-  $("tuneMsg").textContent = (j.ok ? "Done" : "Finished with a problem") + " in " + (j.seconds || 0).toFixed(1) + " s." + (j.receipt ? " Receipt: " + j.receipt : "");
-  $("tuneMsg").className = j.ok ? "ok" : "bad";
-  $("tuneOut").hidden = false;
-  $("tuneOut").textContent = j.result ? JSON.stringify(j.result, null, 2) : ((j.stdout || "") + (j.stderr ? "\n--- messages ---\n" + j.stderr : ""));
-  if (action === "scan") {
+  if (action === "apply") {
+    const pre = await runTune("apply-preview", game);
+    if (!showRun(pre)) return;
+    if (!pre.ok || !confirm("These are the changes (shown on the page). Make them now? Every one can be undone.")) { loadReceipts(); return; }
+  }
+  const j = await runTune(action, game);
+  showRun(j);
+  if (action === "scan") renderFindings(j.result);
+  if (action === "games") {
     const games = gamesFrom(j.result);
-    if (games.length) {
-      const sel = $("game"); sel.textContent = "";
-      games.forEach(g => { const o = el("option", g.label); o.value = g.id; sel.appendChild(o); });
-    }
+    const sel = $("game"); sel.textContent = "";
+    if (!games.length) sel.appendChild(el("option", "(no games found; type the program name)"));
+    games.forEach(g => { const o = el("option", g.label); o.value = g.id; sel.appendChild(o); });
   }
   loadReceipts();
 });

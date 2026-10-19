@@ -29,16 +29,16 @@ change, not a new app build.
 
 ## rig-tune.exe (`tuner/`, standalone crate)
 
-Its CLI is not written yet on tuner/v0 (`src/main.rs` is empty). The app
-assumes:
+Checked against the clap CLI in `tuner/src/main.rs` on tuner/v0 (3ec1a34).
 
-| Button | Default arguments | JSON the page understands |
+| Button | Default arguments | What the page does with it |
 |---|---|---|
-| Scan | `scan --json` | `{"games":[{"id":"cs2","name":"Counter-Strike 2","exe":"cs2.exe"}]}` or a list of strings. `id` is passed to Measure/Apply |
-| Measure | `measure {game} --json` | any object |
-| Apply | `apply {game} --json` | any object |
-| Undo everything | `undo --json` | any object |
-| (game starts / ends) | `game-mode on` / `game-mode off` | ignored; logged. This is the contract written in `tuner/src/gamemode.rs` |
+| Scan this PC | `scan --json` | Table of `findings[]` (`status`, `area`, `what`, `fix`) |
+| Find games | `games --json` | Fills the game list from `[{name, launcher, exe_candidates[]}]`; the first exe is the game's id |
+| Measure | `measure {game} --json` (`{game}` = exe name) | Shows the result; rig-tune waits up to 120 s for the game to start, then counts frames for 60 s |
+| Apply safe changes | `apply --dry-run`, then after the user confirms on the page, `apply --yes` | rig-tune would otherwise ask on a keyboard it does not have |
+| Undo everything | `undo --yes` | Shows the result |
+| (game starts / ends) | `game-mode on` / `game-mode off` | Logged only. Contract in `tuner/src/gamemode.rs` |
 
 ## rig-create.exe (`creator/`, standalone crate)
 

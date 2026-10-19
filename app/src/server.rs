@@ -262,10 +262,12 @@ fn tune(app: &App, body: &Value) -> Response {
     let game = body["game"].as_str().unwrap_or("").trim().to_string();
     let template = match action {
         "scan" => &cfg.tune_scan,
+        "games" => &cfg.tune_games,
         "measure" => &cfg.tune_measure,
+        "apply-preview" => &cfg.tune_apply_preview,
         "apply" => &cfg.tune_apply,
         "undo" => &cfg.tune_undo,
-        _ => return Response::error(400, "action must be scan, measure, apply or undo"),
+        _ => return Response::error(400, "action must be scan, games, measure, apply-preview, apply or undo"),
     };
     let needs_game = template.iter().any(|a| a.contains("{game}"));
     if needs_game && game.is_empty() {
