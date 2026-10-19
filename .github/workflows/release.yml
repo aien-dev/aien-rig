@@ -42,35 +42,43 @@ jobs:
           rustc --version
           cargo --version
 
-      - name: Workspace members present on this commit
-        run: python tools/workspace_sync.py --write --report build-plan.json
+      - name: Crates present on this commit
+        run: python tools/crates.py --json build-plan.json
 
-      - name: Build workspace
+      - name: Build the app
         run: cargo build --release --workspace --target $env:TARGET
 
-      - name: Build standalone crates
+      - name: Build tuner, creator, speech (whichever are present)
         run: |
           $plan = Get-Content build-plan.json -Raw | ConvertFrom-Json
+          $failed = @()
           foreach ($c in $plan.standalone) {
-            cargo build --release --manifest-path "$c/Cargo.toml" --target $env:TARGET --target-dir target
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            Write-Host "::group::$($c.folder) -> $($c.program).exe"
+            cargo build --release --manifest-path "$($c.folder)/Cargo.toml" --bin $c.program --target $env:TARGET --target-dir target
+            $rc = $LASTEXITCODE
+            Write-Host "::endgroup::"
+            if ($rc -ne 0) {
+              if ($c.required) { $failed += $c.folder } else { Write-Host "::warning::$($c.folder) did not build; $($c.program).exe is left out" }
+            }
           }
+          if ($failed.Count -gt 0) { Write-Host "::error::did not build: $($failed -join ', ')"; exit 1 }
+          exit 0
 
-      - name: Test
+      - name: Test the app
         run: cargo test --workspace --target $env:TARGET
 
       - name: Smoke test aien-rig.exe
         run: |
           $env:AIEN_RIG_HOME = "$env:RUNNER_TEMP\aien-rig-home"
-          $p = Start-Process -FilePath "target\$env:TARGET\release\aien-rig.exe" -ArgumentList "--no-browser","--port","18120" -PassThru
+          $p = Start-Process -FilePath "target\$env:TARGET\release\aien-rig.exe" -ArgumentList "--no-browser","--port","18100" -PassThru
           try {
             $ok = $false
             for ($i = 0; $i -lt 20 -and -not $ok; $i++) {
               Start-Sleep -Milliseconds 500
-              try { $s = Invoke-RestMethod -Uri "http://127.0.0.1:18120/api/status" -TimeoutSec 5; $ok = [bool]$s.ok } catch { }
+              try { $s = Invoke-RestMethod -Uri "http://127.0.0.1:18100/api/status" -TimeoutSec 5; $ok = [bool]$s.ok } catch { }
             }
             if (-not $ok) { throw "aien-rig.exe did not answer /api/status" }
-            $page = Invoke-WebRequest -Uri "http://127.0.0.1:18120/" -UseBasicParsing -TimeoutSec 5
+            $page = Invoke-WebRequest -Uri "http://127.0.0.1:18100/" -UseBasicParsing -TimeoutSec 5
             if ($page.Content -notmatch "AIEN") { throw "page did not load" }
             $s | ConvertTo-Json -Depth 5
           } finally {

@@ -1,13 +1,15 @@
 # AIEN Rig workspace.
 #
-# Planned members: app, tuner, creator, speech. Each stream adds its own
-# crate on its own branch, so a branch may hold only some of them. Cargo has
-# no "skip if missing" for members, so `tools/workspace_sync.py --write`
-# rewrites the members list below to the crates that exist (CI runs it before
-# every build). Run it yourself after merging a stream.
+# The root workspace holds the app. tuner/, creator/ and speech/ are built by
+# their own streams as self-contained crates with their own Cargo.lock (tuner
+# and speech declare their own [workspace]), so they are excluded here and
+# built with --manifest-path. Excluding a folder that does not exist yet is
+# fine, so every branch builds whether or not the others are merged.
+# tools/crates.py lists what is present; CI builds each one.
 [workspace]
 resolver = "2"
 members = ["app"]
+exclude = ["tuner", "creator", "speech"]
 
 [profile.release]
 codegen-units = 1

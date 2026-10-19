@@ -10,6 +10,7 @@ use std::time::{Duration, Instant};
 
 pub const TUNE: &str = "rig-tune";
 pub const CREATE: &str = "rig-create";
+pub const LISTEN: &str = "rig-listen";
 
 /// Hides the black console window that Windows opens for child programs.
 pub fn no_window(cmd: &mut Command) -> &mut Command {

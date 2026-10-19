@@ -26,8 +26,16 @@ pub struct Config {
     pub tune_measure: Vec<String>,
     pub tune_apply: Vec<String>,
     pub tune_undo: Vec<String>,
-    /// Arguments passed to rig-create.exe. `{file}` is replaced.
+    /// Run by the game watcher when a game starts / ends (the tuner's own
+    /// game mode: it pauses Windows-side AI server processes). Empty = skip.
+    pub tune_game_mode_on: Vec<String>,
+    pub tune_game_mode_off: Vec<String>,
+    /// Arguments passed to rig-create.exe. `{file}`, `{server}` (engine
+    /// address + /v1) and `{out}` (results folder) are replaced.
     pub create_args: Vec<String>,
+    /// Arguments passed to rig-listen.exe (speech to text) for videos.
+    /// `{file}` and `{out}` (transcript JSON path) are replaced.
+    pub listen_args: Vec<String>,
     /// Longest a tool may run before it is stopped, in seconds.
     pub tool_timeout_secs: u64,
 }
@@ -41,8 +49,8 @@ impl Default for Config {
         Config {
             engine_mode: "wsl".into(),
             engine_distro: String::new(),
-            engine_command: "aien-serve-http --engine omega --bind 127.0.0.1 --port 18006".into(),
-            engine_url: "http://127.0.0.1:18006".into(),
+            engine_command: "aien-serve-http --engine omega --bind 127.0.0.1 --port 18120".into(),
+            engine_url: "http://127.0.0.1:18120".into(),
             games: v(&[
                 "cs2.exe",
                 "FortniteClient-Win64-Shipping.exe",
@@ -58,7 +66,10 @@ impl Default for Config {
             tune_measure: v(&["measure", "{game}", "--json"]),
             tune_apply: v(&["apply", "{game}", "--json"]),
             tune_undo: v(&["undo", "--json"]),
-            create_args: v(&["{file}", "--json"]),
+            tune_game_mode_on: v(&["game-mode", "on"]),
+            tune_game_mode_off: v(&["game-mode", "off"]),
+            create_args: v(&["{file}", "--server", "{server}", "--out", "{out}"]),
+            listen_args: v(&["{file}", "--out", "{out}"]),
             tool_timeout_secs: 1800,
         }
     }
@@ -97,8 +108,9 @@ impl Config {
     }
 }
 
-/// Folder for settings, receipts and logs.
-/// Windows: %LOCALAPPDATA%\AIEN Rig. Elsewhere: ~/.local/share/aien-rig.
+/// Folder for settings, receipts and logs, shared with rig-tune.exe so every
+/// receipt ends up in one place.
+/// Windows: %LOCALAPPDATA%\AIEN-Rig. Elsewhere: ~/.local/share/aien-rig.
 /// AIEN_RIG_HOME overrides both.
 pub fn data_dir() -> PathBuf {
     if let Some(p) = std::env::var_os("AIEN_RIG_HOME") {
@@ -106,7 +118,7 @@ pub fn data_dir() -> PathBuf {
     }
     if cfg!(windows) {
         if let Some(p) = std::env::var_os("LOCALAPPDATA") {
-            return PathBuf::from(p).join("AIEN Rig");
+            return PathBuf::from(p).join("AIEN-Rig");
         }
     }
     if let Some(p) = std::env::var_os("XDG_DATA_HOME") {

@@ -26,6 +26,7 @@ GETTING IT
      aien-rig.exe       (the app)
      rig-tune.exe       (the FPS tuner, used by the Play tab)
      rig-create.exe     (the YouTube helper, used by the Create tab)
+     rig-listen.exe     (speech to text for videos; only in some downloads)
      README-FIRST.txt   (this file)
      VERSION.txt        (which version you have)
      LICENSE.txt
@@ -37,7 +38,7 @@ GETTING IT
 
 5. A black window opens and your browser opens the AIEN Rig page.
    Keep the black window open while you use AIEN Rig. Closing it quits.
-   If the browser does not open by itself, go to:  http://127.0.0.1:18120
+   If the browser does not open by itself, go to:  http://127.0.0.1:18100
 
 
 USING IT
@@ -55,9 +56,15 @@ Play tab
     You can change the list of games on the Settings tab.
 
 Create tab
-  - Click "Pick a video..." or "Pick a caption file..." (the file window can
-    open behind the browser; check the taskbar), or paste the full path.
-  - Click "Make it". Each result has a Copy button.
+  - Easiest today: a caption file. In YouTube Studio open your video,
+    Subtitles, and download the .srt or .vtt. Then click
+    "Pick a caption file..." (the file window can open behind the browser;
+    check the taskbar), or paste the full path.
+  - A video file works only if rig-listen.exe is in the folder.
+  - Click "Make it". Each result has a Copy button. All files (including
+    youtube.txt with everything in order) are saved too; the page says where.
+  - The Create tab uses the AI engine, so it needs the engine running (see
+    Chat below). Until then it can still clean filler words out of captions.
 
 Chat tab
   - Click "Start engine", wait, then type.
@@ -71,8 +78,9 @@ WHAT WORKS TODAY
   - The app itself: the page, the three tabs, settings, receipts, the game
     watcher. It is built and its tests run on Windows by GitHub's build
     machines every time we change it.
-  - The Play and Create tabs work when rig-tune.exe and rig-create.exe are in
-    the folder. VERSION.txt lists which programs this download contains.
+  - The Play tab works when rig-tune.exe is in the folder, and the Create
+    tab when rig-create.exe is. VERSION.txt lists which programs this
+    download contains.
 
 
 NOT TESTED YET
@@ -92,7 +100,7 @@ SENDING RESULTS BACK
 Every time Play or Create runs, AIEN Rig saves a receipt. To send them:
 
 1. Press Windows key + R, paste this and press Enter:
-       %LOCALAPPDATA%\AIEN Rig
+       %LOCALAPPDATA%\AIEN-Rig
 2. Right-click the "receipts" folder, pick "Compress to ZIP file".
 3. Send that zip plus the VERSION.txt from the AIEN Rig folder to Drake.
 4. If something went wrong, also send a photo or screenshot of the black
@@ -108,7 +116,7 @@ REMOVING IT
 1. Play tab: click "Undo everything" first.
 2. Close the black window.
 3. Delete the AIEN Rig folder you extracted, and the folder
-   %LOCALAPPDATA%\AIEN Rig  (settings and receipts).
+   %LOCALAPPDATA%\AIEN-Rig  (settings and receipts).
 
 AIEN Rig is free software under the GNU AGPL-3.0 (see LICENSE.txt).
 Source: https://github.com/aien-dev/aien-rig

@@ -1,6 +1,6 @@
 //! aien-rig: one Windows program for the RTX gaming PC.
 //!
-//! Opens a local page at http://127.0.0.1:18120 with three tabs:
+//! Opens a local page at http://127.0.0.1:18100 with three tabs:
 //! Play (FPS tuner), Create (YouTube helper) and Chat (local engine).
 
 mod config;
@@ -13,7 +13,7 @@ mod tools;
 use std::net::TcpListener;
 use std::sync::Arc;
 
-const DEFAULT_PORT: u16 = 18120;
+const DEFAULT_PORT: u16 = 18100;
 
 fn usage() -> String {
     format!(

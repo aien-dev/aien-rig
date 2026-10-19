@@ -204,22 +204,18 @@ fn set_config(app: &App, body: &Value) -> Response {
     Response::json(200, &json!({ "ok": true, "config": cfg }))
 }
 
-fn run_tool(app: &App, tool: &str, action: &str, args: Vec<String>) -> Response {
+/// Runs one tool and writes its receipt. The caller holds `tool_busy`.
+fn run_one(app: &App, tool: &str, action: &str, args: Vec<String>) -> Result<(tools::RunResult, Option<String>), Response> {
     let Some(program) = tools::find_tool(tool, app.tools_dir.as_deref()) else {
-        return Response::error(
+        return Err(Response::error(
             404,
             &format!("{tool}.exe was not found next to aien-rig.exe. Unzip the whole release into one folder."),
-        );
-    };
-    let Ok(_busy) = app.tool_busy.try_lock() else {
-        return Response::error(409, "Another tool run is still going. Wait for it to finish.");
+        ));
     };
     let timeout = Duration::from_secs(app.config().tool_timeout_secs);
     app.log(format!("Running {tool} {}", args.join(" ")));
-    let r = match tools::run(&program, &args, timeout) {
-        Ok(r) => r,
-        Err(e) => return Response::error(500, &format!("could not run {tool}: {e}")),
-    };
+    let r = tools::run(&program, &args, timeout)
+        .map_err(|e| Response::error(500, &format!("could not run {tool}: {e}")))?;
     let receipt = tools::write_receipt(&app.data_dir, tool, action, &r).ok();
     app.log(format!(
         "{tool} {action} finished: exit {:?}{} in {:.1} s",
@@ -227,6 +223,10 @@ fn run_tool(app: &App, tool: &str, action: &str, args: Vec<String>) -> Response 
         if r.timed_out { " (stopped: too long)" } else { "" },
         r.seconds
     ));
+    Ok((r, receipt))
+}
+
+fn run_reply(r: &tools::RunResult, receipt: Option<String>, result: Option<Value>) -> Response {
     Response::json(
         200,
         &json!({
@@ -234,12 +234,26 @@ fn run_tool(app: &App, tool: &str, action: &str, args: Vec<String>) -> Response 
             "exit_code": r.exit_code,
             "timed_out": r.timed_out,
             "seconds": r.seconds,
-            "result": r.parsed(),
+            "result": result.or_else(|| r.parsed()),
             "stdout": r.stdout,
             "stderr": r.stderr,
             "receipt": receipt,
         }),
     )
+}
+
+fn busy() -> Response {
+    Response::error(409, "Another tool run is still going. Wait for it to finish.")
+}
+
+fn run_tool(app: &App, tool: &str, action: &str, args: Vec<String>) -> Response {
+    let Ok(_busy) = app.tool_busy.try_lock() else {
+        return busy();
+    };
+    match run_one(app, tool, action, args) {
+        Ok((r, receipt)) => run_reply(&r, receipt, None),
+        Err(resp) => resp,
+    }
 }
 
 fn tune(app: &App, body: &Value) -> Response {
@@ -260,16 +274,90 @@ fn tune(app: &App, body: &Value) -> Response {
     run_tool(app, tools::TUNE, action, tools::fill(template, "game", &game))
 }
 
+const MEDIA_EXTS: [&str; 12] = [
+    "mp4", "mov", "mkv", "webm", "avi", "m4v", "mp3", "wav", "m4a", "flac", "ogg", "aac",
+];
+
+pub fn is_media(path: &str) -> bool {
+    std::path::Path::new(path)
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|e| MEDIA_EXTS.contains(&e.to_ascii_lowercase().as_str()))
+        .unwrap_or(false)
+}
+
+/// Video or audio: rig-listen makes a transcript, then rig-create.
+/// Caption file: rig-create directly. rig-create writes result.json into
+/// the results folder; the page shows that.
 fn create(app: &App, body: &Value) -> Response {
     let path = body["path"].as_str().unwrap_or("").trim().trim_matches('"').to_string();
     if path.is_empty() {
         return Response::error(400, "Pick a video or caption file first.");
     }
-    if !std::path::Path::new(&path).is_file() {
+    let file = std::path::Path::new(&path);
+    if !file.is_file() {
         return Response::error(404, &format!("File not found: {path}"));
     }
     let cfg = app.config();
-    run_tool(app, tools::CREATE, "create", tools::fill(&cfg.create_args, "file", &path))
+    let stem: String = file
+        .file_stem()
+        .map(|s| s.to_string_lossy().into_owned())
+        .unwrap_or_default()
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() || c == '-' { c } else { '_' })
+        .take(40)
+        .collect();
+    let out_dir = app
+        .data_dir
+        .join("create")
+        .join(format!("{}-{stem}", crate::config::stamp(unix_now())));
+    if let Err(e) = std::fs::create_dir_all(&out_dir) {
+        return Response::error(500, &format!("could not make the results folder: {e}"));
+    }
+    let Ok(_busy) = app.tool_busy.try_lock() else {
+        return busy();
+    };
+
+    let mut transcript = path.clone();
+    if is_media(&path) {
+        if tools::find_tool(tools::LISTEN, app.tools_dir.as_deref()).is_none() {
+            return Response::error(
+                404,
+                "Videos need the speech program (rig-listen.exe), which is not in this download yet. \
+                 Use the video's caption file instead: in YouTube Studio open Subtitles, then download the .srt or .vtt.",
+            );
+        }
+        let tjson = out_dir.join("transcript.json").display().to_string();
+        let args = tools::fill(&tools::fill(&cfg.listen_args, "file", &path), "out", &tjson);
+        let (r, receipt) = match run_one(app, tools::LISTEN, "transcribe", args) {
+            Ok(x) => x,
+            Err(resp) => return resp,
+        };
+        if !r.ok() {
+            return run_reply(&r, receipt, None);
+        }
+        transcript = tjson;
+    }
+
+    let server = format!("{}/v1", cfg.engine_url.trim_end_matches('/'));
+    let out = out_dir.display().to_string();
+    let args = tools::fill(
+        &tools::fill(&tools::fill(&cfg.create_args, "file", &transcript), "server", &server),
+        "out",
+        &out,
+    );
+    let (r, receipt) = match run_one(app, tools::CREATE, "create", args) {
+        Ok(x) => x,
+        Err(resp) => return resp,
+    };
+    let result = std::fs::read(out_dir.join("result.json"))
+        .ok()
+        .and_then(|b| serde_json::from_slice::<Value>(&b).ok())
+        .map(|mut v| {
+            v["results_folder"] = json!(out);
+            v
+        });
+    run_reply(&r, receipt, result)
 }
 
 fn pick_file(body: &Value) -> Response {
@@ -414,6 +502,7 @@ fn on_change(app: &App, cfg: &Config, change: Change) {
                     }
                 }
                 drop(eng);
+                tuner_game_mode(app, &cfg.tune_game_mode_on, "on");
                 if cfg!(windows) {
                     match games::read_game_mode() {
                         Ok(Some(0)) => match games::write_game_mode(Some(1)) {
@@ -433,6 +522,9 @@ fn on_change(app: &App, cfg: &Config, change: Change) {
         Change::Ended(name) => {
             app.log(format!("Game closed: {name}"));
             let st = std::mem::take(&mut *app.game.lock().unwrap());
+            if cfg.auto_game_mode {
+                tuner_game_mode(app, &cfg.tune_game_mode_off, "off");
+            }
             if let Some(prev) = st.saved_game_mode {
                 match games::write_game_mode(prev) {
                     Ok(()) => app.log("Windows Game Mode set back to how it was."),
@@ -448,6 +540,19 @@ fn on_change(app: &App, cfg: &Config, change: Change) {
             }
         }
     }
+}
+
+/// Best effort: tell rig-tune about game mode (it pauses Windows-side AI
+/// server processes). Skipped when rig-tune is absent or busy.
+fn tuner_game_mode(app: &App, args: &[String], what: &str) {
+    if args.is_empty() || tools::find_tool(tools::TUNE, app.tools_dir.as_deref()).is_none() {
+        return;
+    }
+    let Ok(_busy) = app.tool_busy.try_lock() else {
+        app.log(format!("Skipped rig-tune game-mode {what}: another tool is running."));
+        return;
+    };
+    let _ = run_one(app, tools::TUNE, &format!("game-mode-{what}"), args.to_vec());
 }
 
 #[cfg(test)]
@@ -548,6 +653,47 @@ mod tests {
         let (s, _, text) = raw(port, &format!("GET /api/receipts HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\n\r\n"));
         assert_eq!(s, 200);
         assert!(text.contains(&name));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn create_runs_creator_and_reads_result_json() {
+        use std::os::unix::fs::PermissionsExt;
+        let tools_dir = temp_dir("create-tools");
+        let script = tools_dir.join("rig-create");
+        // Fake rig-create: args are <file> --server <url> --out <dir>.
+        std::fs::write(
+            &script,
+            "#!/bin/sh\nprintf '{\"titles\":[\"T1\"],\"server\":\"%s\"}' \"$3\" > \"$5/result.json\"\necho done\n",
+        )
+        .unwrap();
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+        let captions = tools_dir.join("clip.srt");
+        std::fs::write(&captions, "1\n00:00:00,000 --> 00:00:01,000\nhi\n").unwrap();
+        let (_app, port) = start_app("create", Config::default(), Some(tools_dir.clone()));
+        let (s, v) = post(port, "/api/create", &json!({"path": captions.display().to_string()}));
+        assert_eq!(s, 200, "{v}");
+        assert_eq!(v["result"]["titles"], json!(["T1"]));
+        assert_eq!(v["result"]["server"], json!("http://127.0.0.1:18120/v1"));
+        assert!(v["result"]["results_folder"].as_str().is_some());
+
+        let video = tools_dir.join("clip.mp4");
+        std::fs::write(&video, b"not really a video").unwrap();
+        if tools::find_tool(tools::LISTEN, None).is_none() {
+            let (s, v) = post(port, "/api/create", &json!({"path": video.display().to_string()}));
+            assert_eq!(s, 404, "{v}");
+            assert!(v["error"].as_str().unwrap().contains("rig-listen"));
+        }
+        let (s, _) = post(port, "/api/create", &json!({"path": "/no/such/file.srt"}));
+        assert_eq!(s, 404);
+    }
+
+    #[test]
+    fn media_detection() {
+        assert!(is_media("C:\\Videos\\Clip.MP4"));
+        assert!(is_media("a.mkv"));
+        assert!(!is_media("a.srt"));
+        assert!(!is_media("noext"));
     }
 
     #[test]

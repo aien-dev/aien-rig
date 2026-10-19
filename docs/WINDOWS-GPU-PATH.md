@@ -180,8 +180,8 @@ contract between them.
 - `aien-rig.exe` runs on Windows. Its Chat tab and the game watcher start the
   engine with `wsl.exe -d <distro> -- bash -lc '<engine command>'`, where the
   default command is
-  `aien-serve-http --engine omega --bind 127.0.0.1 --port 18006`, and talk to
-  `http://127.0.0.1:18006/v1/...`. WSL2 forwards `localhost` from Windows to
+  `aien-serve-http --engine omega --bind 127.0.0.1 --port 18120`, and talk to
+  `http://127.0.0.1:18120/v1/...` (the same address rig-create uses by default). WSL2 forwards `localhost` from Windows to
   Linux by default.
 - The engine's process id is written to `~/.aien-rig/engine.pid` inside WSL so
   the app can stop exactly that process and nothing else.

@@ -17,6 +17,7 @@ import zipfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ZIP_NAME = "aien-rig-windows-x64.zip"
 PROGRAMS = ["aien-rig.exe", "rig-tune.exe", "rig-create.exe"]
+OPTIONAL = ["rig-listen.exe"]  # speech to text; included when it built
 DOCS = [("README-FIRST.txt", "README-FIRST.txt"), ("LICENSE", "LICENSE.txt")]
 
 
@@ -38,6 +39,12 @@ def main(argv=None):
                 break
         else:
             missing.append(exe)
+    for exe in OPTIONAL:
+        for d in a.bin_dir:
+            p = pathlib.Path(d) / exe
+            if p.is_file():
+                found[exe] = p
+                break
     for m in missing:
         print(f"{'error' if a.require_all else 'warning'}: {m} was not built", file=sys.stderr)
     if "aien-rig.exe" not in found or (a.require_all and missing):
