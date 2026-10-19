@@ -1,0 +1,35 @@
+[package]
+name = "aien-rig-speech"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+description = "AIEN Rig speech-to-text: Whisper-family transcription on our own runtime (Rust CPU path, Omega GPU matmul on GB10)"
+publish = false
+
+# Self-contained: not part of any parent workspace.
+[workspace]
+
+[[bin]]
+name = "rig-listen"
+path = "src/main.rs"
+
+[features]
+default = []
+# Link Omega's libomega_gpu.a (our own GPU encoder, no CUDA) and run the big
+# matrix multiplies on the GB10. Set OMEGA_GPU_LIB=/path/to/libomega_gpu.a.
+omega = []
+
+[dependencies]
+symphonia = { version = "0.5", default-features = false, features = ["aac", "alac", "flac", "mp3", "pcm", "vorbis", "wav", "isomp4", "mkv", "ogg", "adpcm"] }
+rustfft = "6"
+rayon = "1"
+serde_json = { version = "1", features = ["preserve_order"] }
+memmap2 = "0.9"
+half = "2"
+libm = "0.2"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "thin"
+debug = 1
