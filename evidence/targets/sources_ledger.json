@@ -1,0 +1,506 @@
+[
+  {
+    "id": 1,
+    "url": "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family",
+    "title": "NVIDIA: GeForce RTX 5070 Family specs",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Required System Power (W)",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "Base Clock (GHz) 2.3 2.33 Memory Specs",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "url": "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf",
+    "title": "NVIDIA RTX Blackwell GPU Architecture whitepaper (Table 6, GB205 / RTX 5070)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Memory Bandwidth 448 GB/sec 504 GB/sec 672 GB/sec",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "RTX Blackwell adds new support for FP4 and FP6 Tensor Core operations",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "Effective TOPS / TFLOPS using the Sparsity Feature",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "url": "https://www.hardware-corner.net/gpu-llm-benchmarks/rtx-5070",
+    "title": "Hardware Corner: RTX 5070 local LLM benchmarks",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Utilizes GDDR7 memory (672 GB/s) to achieve decent generation speeds of 40.6 t/s.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "url": "https://www.hardware-corner.net/gpu-ranking-local-llm",
+    "title": "Hardware Corner: GPU ranking for local LLMs (method: llama-bench, CUDA 12.8, Q4_K_XL)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "We used 4-bit (Q4_K_XL) quantization for all of the benchmarks.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "url": "https://www.hardware-corner.net/gpu-llm-benchmarks/rtx-5070-ti",
+    "title": "Hardware Corner: RTX 5070 Ti local LLM benchmarks",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Updated Benchmarks: March 2026.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "url": "https://www.localscore.ai/accelerator/168",
+    "title": "LocalScore: NVIDIA GeForce RTX 5070 results",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Meta Llama 3.1 8B Instruct",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "url": "https://www.localscore.ai/accelerator/160",
+    "title": "LocalScore: NVIDIA GeForce RTX 5070 Ti results",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "NVIDIA GeForce RTX 5070 Ti",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "url": "https://gpubattle.com/ai/geforce-rtx-5070",
+    "title": "GPU Battle: GeForce RTX 5070 AI benchmarks (llama.cpp Q4_K_M, measured 2026-07-11)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Measured 2026-07-11 · harness 2.0.0-standalone.",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "the Qwen3-4B to Llama-70B LLM ladder (llama.cpp, Q4_K_M)",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "url": "https://gpubattle.com/ai/geforce-rtx-5070-ti",
+    "title": "GPU Battle: GeForce RTX 5070 Ti AI benchmarks",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Qwen3 14B 79.02 tok/s",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "url": "https://github.com/ggml-org/llama.cpp/discussions/15013",
+    "title": "llama.cpp discussion 15013: RTX 5070 llama-bench (Llama 2 7B Q4_0)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "tg128  | 127.54",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "url": "https://calebcoffie.com/benchmarks/gemma-3-4b-it-gguf",
+    "title": "Caleb Coffie: Gemma 3 4B runs incl. RTX 5070 llama.cpp CUDA",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "GeForce RTX 5070 · 12 GiB",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "url": "https://calebcoffie.com/benchmarks/qwen2-5-coder-7b-instruct-gguf",
+    "title": "Caleb Coffie: Qwen2.5-Coder 7B runs incl. RTX 5070 llama.cpp Vulkan",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "llama.cpp b9174 (vulkan)",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "url": "https://github.com/Pyghast/local-llm-benchmarks",
+    "title": "Pyghast: Ollama benchmarks on RTX 5070 (Windows 11)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Backend: Ollama 0.32.14",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "url": "https://kr-lsb.github.io/posts/inferbench-awq-vs-nvfp4",
+    "title": "kr-lsb: vLLM AWQ vs NVFP4 on RTX 5070 Ti",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "At concurrency 1, the two formats are nearly identical",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "url": "https://github.com/kildren-coder/story-machine/issues/9",
+    "title": "kildren-coder: faster-whisper on RTX 5070, measured speed (issue #9 comments)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "BatchedInferencePipeline, batch_size=16 | 196.7s",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "url": "https://github.com/SYSTRAN/faster-whisper",
+    "title": "SYSTRAN faster-whisper README benchmark (RTX 3070 Ti)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "GPU Benchmarks are Executed with CUDA 12.4 on a NVIDIA RTX 3070 Ti 8GB.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "url": "https://huggingface.co/Qwen/Qwen3-4B-GGUF",
+    "title": "Qwen3-4B-GGUF (file sizes, tensor table)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Number of Parameters: 4.0B",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "url": "https://huggingface.co/Qwen/Qwen3-8B-GGUF",
+    "title": "Qwen3-8B-GGUF",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Number of Parameters: 8.2B",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "url": "https://huggingface.co/Qwen/Qwen3-14B-GGUF",
+    "title": "Qwen3-14B-GGUF",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Number of Parameters: 14.8B",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "url": "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+    "title": "bartowski Meta-Llama-3.1-8B-Instruct-GGUF",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Q4_K_M | 4.92GB | false",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "url": "https://huggingface.co/bartowski/google_gemma-3-12b-it-GGUF",
+    "title": "bartowski google_gemma-3-12b-it-GGUF",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Q4_K_M | 7.30GB | false",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "url": "https://www.digitalfoundry.net/articles/digitalfoundry-2025-nvidia-geforce-rtx-5070-review?page=8",
+    "title": "Digital Foundry: RTX 5070 review, DLSS 4 and path tracing page",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "all the way up to 122fps at the 4x setting with 72ms of average lag",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/39.html",
+    "title": "TechPowerUp: RTX 5070 FE review, DLSS 4 page",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "RTX 5070 Native x4 154 FPS 54 ms",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "url": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/46.html",
+    "title": "TechPowerUp: RTX 5070 FE review, conclusion (OC, transformer cost)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Overclocking worked extremely well on the 5070, reaching +13% in real-life performance.",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "While it comes with a roughly 10% performance hit compared to CNN",
+        "added": "2026-10-19"
+      },
+      {
+        "text": "given a base FPS of like 40 or 50, DLSS x4 works great to achieve the smoothness of over 150 FPS",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "url": "https://www.kitguru.net/components/graphic-cards/dominic-moass/nvidia-rtx-5070-review/all/1",
+    "title": "KitGuru: RTX 5070 review (MFG latency)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Latency still went up, from 25.6ms to 38.9ms",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "url": "https://gamersnexus.net/gpus/nvidia-selling-lies-rtx-5070-founders-edition-review-benchmarks",
+    "title": "Gamers Nexus: RTX 5070 FE review",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "That was 500-720 ms.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "url": "https://www.techspot.com/review/2960-nvidia-geforce-rtx-5070",
+    "title": "TechSpot (Hardware Unboxed): RTX 5070 review",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Across the 16 games tested at 1440p, the RTX 5070 was, on average, just 1% faster than the 4070 Super.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "url": "https://www.techspot.com/article/2957-nvidia-dlss-4-vs-dlss-3",
+    "title": "TechSpot (Hardware Unboxed): DLSS 4 vs DLSS 3",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "On average, the performance impact was 7% when comparing the same mode across versions.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "url": "https://www.techpowerup.com/review/nvidia-dlss-4-transformers-image-quality",
+    "title": "TechPowerUp: DLSS 4 Transformer review",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "On a GeForce RTX 4080 GPU, the performance cost is very small, usually around 3-5% depending on a game",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "url": "https://www.techspot.com/review/2234-nvidia-resizable-bar",
+    "title": "TechSpot (Hardware Unboxed): Nvidia Resizable BAR tested (RTX 3080, 20 games)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "We're looking at no improvement for the RTX 3080 at 1080p, a 1% gain at 1440p if we round up, and 2% gain at 4K.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "url": "https://www.nvidia.com/en-us/geforce/news/reflex-2-even-lower-latency-gameplay-with-frame-warp",
+    "title": "NVIDIA: Reflex 2 with Frame Warp (RTX 5070 example)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "With Reflex Low Latency, latency is more than halved to 27ms.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "url": "https://www.tomshardware.com/pc-components/gpu-drivers/amd-finally-adds-hardware-accelerated-gpu-scheduling-support-to-some-of-its-gpus-three-years-after-the-feature-first-debuted-in-windows",
+    "title": "Tom's Hardware: DLSS frame generation requires HAGS",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Nvidia's DLSS frame generation requires hardware accelerated GPU scheduling to be active in order to work.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "url": "https://windowsforum.com/news/windows-11-game-mode-raises-1-lows-not-average-fps.437707",
+    "title": "WindowsForum summary of MakeUseOf Game Mode testing (secondary)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "the 1% low leapt from 48.2 to 71.5 FPS",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "url": "https://support.microsoft.com/en-us/windows/hardware/display-graphics/change-the-refresh-rate-on-your-monitor-in-windows",
+    "title": "Microsoft: change the refresh rate on your monitor",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "For example, a 60Hz display will update the screen 60 times per second.",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "url": "https://www.newegg.com/insider/how-to-adjust-refresh-rate-settings-in-windows-and-gpu-control-panels",
+    "title": "Newegg Insider: refresh rate stuck at 60Hz",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Windows doesn't always automatically switch to the maximum rate when you connect a new monitor",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "url": "https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance",
+    "title": "NVIDIA support: Power management mode",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "can improve performance in certain applications when the GPU is throttling the clock speeds incorrectly resulting in low fps",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "url": "https://blurbusters.com/gsync/gsync101-input-lag-tests-and-settings/14",
+    "title": "Blur Busters: G-SYNC 101 optimal settings",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Set (a minimum of) 3 FPS limit below display’s maximum refresh rate",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "url": "https://www.nvidia.com/en-us/geforce/news/nvidia-app-update-dlss-overrides-and-more",
+    "title": "NVIDIA: App update, DLSS overrides and Smooth Motion",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "For games without DLSS Frame Generation, NVIDIA Smooth Motion is a new option",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "url": "https://www.reddit.com/r/nvidia/comments/1ui60cu/undervolt_on_rtx_5070_is_amazing",
+    "title": "Reddit r/nvidia: RTX 5070 undervolt (single user, community)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "Losing only ~5% performance while reducing maximum board power by roughly 90W",
+        "added": "2026-10-19"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "url": "https://huggingface.co/unsloth/gemma-3-12b-it",
+    "title": "Gemma 3 12B config (sliding_window 1024, pattern 6)",
+    "accessed": "2026-10-19",
+    "quotes": [
+      {
+        "text": "\"sliding_window\": 1024, \"sliding_window_pattern\": 6",
+        "added": "2026-10-19"
+      }
+    ]
+  }
+]

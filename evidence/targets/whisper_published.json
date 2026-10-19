@@ -1,0 +1,77 @@
+{
+ "retrieved": "2026-10-19",
+ "rows": [
+  {
+   "gpu": "RTX 5070",
+   "engine": "faster-whisper 1.2.1 / CTranslate2 4.8.1",
+   "model": "large-v3",
+   "precision": "float16",
+   "mode": "sequential transcribe(), VAD, word_timestamps, language=zh",
+   "audio_minutes": 141.4,
+   "wall_seconds": 1589.5,
+   "x_realtime": 5.3,
+   "os": "Windows (driver 610.47)",
+   "date": "2026-07-23",
+   "source": "https://github.com/kildren-coder/story-machine/issues/9"
+  },
+  {
+   "gpu": "RTX 5070",
+   "engine": "faster-whisper 1.2.1 / CTranslate2 4.8.1",
+   "model": "large-v3",
+   "precision": "float16",
+   "mode": "BatchedInferencePipeline batch_size=16, VAD, word_timestamps, language=zh",
+   "audio_minutes": 141.4,
+   "wall_seconds": 196.7,
+   "x_realtime": 43.1,
+   "os": "Windows (driver 610.47)",
+   "date": "2026-07-23",
+   "source": "https://github.com/kildren-coder/story-machine/issues/9"
+  },
+  {
+   "gpu": "RTX 3070 Ti 8GB (reference, older card)",
+   "engine": "faster-whisper",
+   "model": "large-v2",
+   "precision": "fp16",
+   "mode": "batch_size=8, beam 5",
+   "audio_minutes": 13,
+   "wall_seconds": 17,
+   "x_realtime": 45.9,
+   "source": "https://github.com/SYSTRAN/faster-whisper",
+   "notes": "README benchmark, CUDA 12.4"
+  },
+  {
+   "gpu": "RTX 3070 Ti 8GB (reference, older card)",
+   "engine": "faster-whisper",
+   "model": "large-v2",
+   "precision": "int8",
+   "mode": "batch_size=8, beam 5",
+   "audio_minutes": 13,
+   "wall_seconds": 16,
+   "x_realtime": 48.8,
+   "source": "https://github.com/SYSTRAN/faster-whisper"
+  },
+  {
+   "gpu": "RTX 3070 Ti 8GB (reference, older card)",
+   "engine": "whisper.cpp (Flash Attention)",
+   "model": "large-v2",
+   "precision": "fp16",
+   "mode": "beam 5",
+   "audio_minutes": 13,
+   "wall_seconds": 65,
+   "x_realtime": 12.0,
+   "source": "https://github.com/SYSTRAN/faster-whisper"
+  },
+  {
+   "gpu": "RTX 3070 Ti 8GB (reference, older card)",
+   "engine": "openai/whisper",
+   "model": "large-v2",
+   "precision": "fp16",
+   "mode": "beam 5",
+   "audio_minutes": 13,
+   "wall_seconds": 143,
+   "x_realtime": 5.5,
+   "source": "https://github.com/SYSTRAN/faster-whisper"
+  }
+ ],
+ "not_found": "No RTX 5070 measurement found for large-v3-turbo, distil-whisper, whisper.cpp, or NVIDIA Parakeet/Canary."
+}

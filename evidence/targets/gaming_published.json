@@ -1,0 +1,296 @@
+{
+ "retrieved": "2026-10-19",
+ "items": [
+  {
+   "lever": "DLSS Super Resolution (Transformer) mode",
+   "card": "RTX 5070",
+   "game": "Cyberpunk 2077 RT (TechPowerUp settings)",
+   "data": {
+    "native": [
+     43,
+     47
+    ],
+    "DLAA": [
+     41,
+     45
+    ],
+    "Quality": [
+     71,
+     33
+    ],
+    "Balanced": [
+     84,
+     29
+    ],
+    "Performance": [
+     100,
+     26
+    ],
+    "Ultra Performance": [
+     147,
+     22
+    ]
+   },
+   "units": "[fps, latency ms]",
+   "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/39.html"
+  },
+  {
+   "lever": "DLSS Super Resolution (CNN) mode",
+   "card": "RTX 5070",
+   "game": "Cyberpunk 2077 RT",
+   "data": {
+    "DLAA": [
+     43,
+     45
+    ],
+    "Quality": [
+     74,
+     32
+    ],
+    "Balanced": [
+     89,
+     27
+    ],
+    "Performance": [
+     105,
+     27
+    ],
+    "Ultra Performance": [
+     146,
+     21
+    ]
+   },
+   "units": "[fps, latency ms]",
+   "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/39.html"
+  },
+  {
+   "lever": "DLSS Multi Frame Generation (no upscaling)",
+   "card": "RTX 5070",
+   "game": "Cyberpunk 2077 RT",
+   "data": {
+    "off": [
+     43,
+     47
+    ],
+    "x2": [
+     84,
+     50
+    ],
+    "x3": [
+     121,
+     57
+    ],
+    "x4": [
+     154,
+     54
+    ]
+   },
+   "units": "[fps, latency ms]",
+   "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/39.html"
+  },
+  {
+   "lever": "DLSS Performance + MFG",
+   "card": "RTX 5070",
+   "game": "Cyberpunk 2077 RT Overdrive 4K (Digital Foundry)",
+   "data": {
+    "native_latency_ms": 455.71,
+    "dlss_perf": {
+     "fps": 40,
+     "latency_ms": 51.36
+    },
+    "2x": {
+     "latency_ms": 65.51
+    },
+    "3x": {
+     "latency_ms": 70.29
+    },
+    "4x": {
+     "fps": 122,
+     "latency_ms": 72.32
+    }
+   },
+   "source": "https://www.digitalfoundry.net/articles/digitalfoundry-2025-nvidia-geforce-rtx-5070-review?page=8"
+  },
+  {
+   "lever": "DLSS Performance + MFG",
+   "card": "RTX 5070",
+   "game": "Alan Wake 2 High, full RT, 4K (Digital Foundry)",
+   "data": {
+    "dlss_perf": {
+     "fps": 24,
+     "latency_ms": 114.04
+    },
+    "2x": {
+     "latency_ms": 134.12
+    },
+    "3x": {
+     "latency_ms": 140.84
+    },
+    "4x": {
+     "latency_ms": 146.24
+    }
+   },
+   "source": "https://www.digitalfoundry.net/articles/digitalfoundry-2025-nvidia-geforce-rtx-5070-review?page=8"
+  },
+  {
+   "lever": "MFG 4X",
+   "card": "RTX 5070",
+   "game": "Hogwarts Legacy 4K (KitGuru)",
+   "data": {
+    "base_fps": 100,
+    "mfg4x_fps": 234,
+    "latency_ms": [
+     25.6,
+     38.9
+    ]
+   },
+   "source": "https://www.kitguru.net/components/graphic-cards/dominic-moass/nvidia-rtx-5070-review/all/1/"
+  },
+  {
+   "lever": "MFG 4X under VRAM pressure",
+   "card": "RTX 5070",
+   "game": "Cyberpunk 2077 heavy settings (Gamers Nexus)",
+   "data": {
+    "pc_latency_ms_after_5_min": "500-720",
+    "rtx4090_no_fg_ms": 51
+   },
+   "source": "https://gamersnexus.net/gpus/nvidia-selling-lies-rtx-5070-founders-edition-review-benchmarks"
+  },
+  {
+   "lever": "DLSS 4 vs DLSS 3 upscaler cost",
+   "card": "RTX 5080",
+   "data": {
+    "same_mode_avg_cost_pct": 7,
+    "dlss4_perf_vs_dlss3_quality_pct": 14
+   },
+   "source": "https://www.techspot.com/article/2957-nvidia-dlss-4-vs-dlss-3/"
+  },
+  {
+   "lever": "Reflex / Reflex 2",
+   "card": "RTX 5070",
+   "game": "THE FINALS 4K max (NVIDIA's own figure)",
+   "data": {
+    "off_ms": 56,
+    "reflex_ms": 27,
+    "reflex2_frame_warp_ms": 14
+   },
+   "source": "https://www.nvidia.com/en-us/geforce/news/reflex-2-even-lower-latency-gameplay-with-frame-warp/"
+  },
+  {
+   "lever": "Resizable BAR",
+   "card": "RTX 3080 (no RTX 50 test found)",
+   "data": {
+    "avg_gain_pct": {
+     "1080p": 0,
+     "1440p": 1,
+     "4K": 2
+    },
+    "best_pct": 9,
+    "worst_pct": -10,
+    "games": 20
+   },
+   "source": "https://www.techspot.com/review/2234-nvidia-resizable-bar/"
+  },
+  {
+   "lever": "Manual overclock",
+   "card": "RTX 5070 FE",
+   "data": {
+    "real_life_perf_gain_pct": 13,
+    "clock_mhz": [
+     2800,
+     3150
+    ],
+    "memory_oc_cap": "+375 MHz driver cap"
+   },
+   "source": "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/46.html"
+  },
+  {
+   "lever": "Undervolt 900 mV (single user, community)",
+   "card": "RTX 5070",
+   "game": "Unigine Heaven",
+   "data": {
+    "stock": {
+     "fps": 255.5,
+     "max_board_w": 253.1,
+     "temp_c": 73.2
+    },
+    "uv_900mv": {
+     "fps": 242.4,
+     "max_board_w": 161.0,
+     "temp_c": 63.1
+    }
+   },
+   "source": "https://www.reddit.com/r/nvidia/comments/1ui60cu/undervolt_on_rtx_5070_is_amazing/"
+  },
+  {
+   "lever": "Windows Game Mode",
+   "card": "RTX 4060 Laptop (MakeUseOf via WindowsForum)",
+   "data": {
+    "Cyberpunk 2077 GPU-bound": {
+     "off": [
+      82.4,
+      61.7
+     ],
+     "on": [
+      82.9,
+      62.1
+     ]
+    },
+    "CS2 CPU-bound": {
+     "off": [
+      245.1,
+      142.3
+     ],
+     "on": [
+      246.8,
+      154.6
+     ]
+    },
+    "Forza Horizon 5 with Edge+Discord open": {
+     "off": [
+      94.6,
+      48.2
+     ],
+     "on": [
+      96.1,
+      71.5
+     ]
+    }
+   },
+   "units": "[avg fps, 1% low fps]",
+   "source": "https://windowsforum.com/news/windows-11-game-mode-raises-1-lows-not-average-fps.437707/"
+  },
+  {
+   "lever": "HAGS",
+   "data": "required for DLSS Frame Generation; no reputable FPS measurement found",
+   "source": "https://www.tomshardware.com/pc-components/gpu-drivers/amd-finally-adds-hardware-accelerated-gpu-scheduling-support-to-some-of-its-gpus-three-years-after-the-feature-first-debuted-in-windows"
+  },
+  {
+   "lever": "Monitor refresh mismatch",
+   "data": "Windows does not always switch a new monitor to its max refresh rate",
+   "source": "https://www.newegg.com/insider/how-to-adjust-refresh-rate-settings-in-windows-and-gpu-control-panels"
+  },
+  {
+   "lever": "Power management mode",
+   "data": "helps only when GPU throttles clocks incorrectly (NVIDIA)",
+   "source": "https://nvidia.custhelp.com/app/answers/detail/a_id/3130/~/setting-power-management-mode-from-normal-to-maximum-performance"
+  },
+  {
+   "lever": "G-SYNC + V-SYNC + FPS cap",
+   "data": "cap at least 3 fps below max refresh (Blur Busters)",
+   "source": "https://blurbusters.com/gsync/gsync101-input-lag-tests-and-settings/14/"
+  },
+  {
+   "lever": "Baseline raster",
+   "card": "RTX 5070",
+   "data": {
+    "vs_4070_super_1440p_16_games_pct": 1,
+    "vs_4070_1440p_raster_pct": 22
+   },
+   "source": [
+    "https://www.techspot.com/review/2960-nvidia-geforce-rtx-5070/",
+    "https://www.techpowerup.com/review/nvidia-geforce-rtx-5070-founders-edition/46.html"
+   ]
+  }
+ ]
+}

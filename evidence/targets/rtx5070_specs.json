@@ -1,0 +1,78 @@
+{
+ "card": "NVIDIA GeForce RTX 5070 (desktop, GB205)",
+ "retrieved": "2026-10-19",
+ "sources": [
+  "https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5070-family/",
+  "https://images.nvidia.com/aem-dam/Solutions/geforce/blackwell/nvidia-rtx-blackwell-gpu-architecture.pdf"
+ ],
+ "from_whitepaper_table6": {
+  "gpcs": 5,
+  "tpcs": 24,
+  "sms": 48,
+  "cuda_cores_per_sm": 128,
+  "cuda_cores": 6144,
+  "tensor_cores": "192 (5th gen)",
+  "rt_cores": "48 (4th gen)",
+  "boost_clock_mhz": 2512,
+  "memory": "12 GB GDDR7",
+  "memory_interface_bits": 192,
+  "memory_data_rate_gbps": 28,
+  "memory_bandwidth_gb_s": 672,
+  "l2_cache_kb": 49152,
+  "register_file_kb": 12288,
+  "l1_shared_kb_total": 6144,
+  "rops": 80,
+  "texture_units": 192,
+  "tgp_w": 250,
+  "transistors_billion": 31.1,
+  "die_mm2": 263,
+  "pcie": "Gen 5",
+  "video_engines": "1x NVENC (9th gen), 1x NVDEC (6th gen)",
+  "peak_rates_dense_over_sparse_note": "whitepaper lists dense/sparse; footnote 2 = sparsity",
+  "fp32_tflops_non_tensor": 30.9,
+  "fp16_tflops_non_tensor": 30.9,
+  "int32_tops_non_tensor": 30.9,
+  "rt_tflops": 93.6,
+  "fp4_tensor_tflops_fp32acc": {
+   "dense": 493.9,
+   "sparse": 987.8
+  },
+  "fp8_tensor_tflops_fp16acc": {
+   "dense": 246.9,
+   "sparse": 493.9
+  },
+  "fp8_tensor_tflops_fp32acc": {
+   "dense": 123.5,
+   "sparse": 246.9
+  },
+  "fp16_tensor_tflops_fp16acc": {
+   "dense": 123.5,
+   "sparse": 246.9
+  },
+  "fp16_tensor_tflops_fp32acc": {
+   "dense": 61.7,
+   "sparse": 123.5
+  },
+  "bf16_tensor_tflops_fp32acc": {
+   "dense": 61.7,
+   "sparse": 123.5
+  },
+  "tf32_tensor_tflops": {
+   "dense": 30.9,
+   "sparse": 61.7
+  },
+  "int8_tensor_tops": {
+   "dense": 246.9,
+   "sparse": 493.9
+  },
+  "full_gb205_die": "5 GPCs, 25 TPCs, 50 SMs, 6400 CUDA cores, 192-bit"
+ },
+ "from_nvidia_product_page": {
+  "base_clock_ghz": 2.33,
+  "boost_clock_ghz": 2.51,
+  "ai_tops": 988,
+  "graphics_card_power_w": 250,
+  "required_system_power_w": 650
+ },
+ "precision_support": "Tensor cores support FP16, BF16, TF32, INT8, FP8 (2nd-gen FP8 Transformer Engine), and new FP4 and FP6 (whitepaper section 'FP4 Support')"
+}

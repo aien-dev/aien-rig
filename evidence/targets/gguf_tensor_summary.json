@@ -1,0 +1,126 @@
+{
+ "qwen3-4b-q4km": {
+  "tensor_bytes_total": 2491323904,
+  "params_total": 4022468096,
+  "token_embd": {
+   "type": "Q6_K",
+   "params": 388956160,
+   "bytes": 319065600
+  },
+  "output": null
+ },
+ "qwen3-4b-q8": {
+  "tensor_bytes_total": 4274448384,
+  "params_total": 4022468096,
+  "token_embd": {
+   "type": "Q8_0",
+   "params": 388956160,
+   "bytes": 413265920
+  },
+  "output": null
+ },
+ "qwen3-8b-q4km": {
+  "tensor_bytes_total": 5021827072,
+  "params_total": 8190735360,
+  "token_embd": {
+   "type": "Q4_K",
+   "params": 622329856,
+   "bytes": 350060544
+  },
+  "output": {
+   "type": "Q6_K",
+   "params": 622329856,
+   "bytes": 510504960
+  }
+ },
+ "qwen3-8b-q8": {
+  "tensor_bytes_total": 8703561728,
+  "params_total": 8190735360,
+  "token_embd": {
+   "type": "Q8_0",
+   "params": 622329856,
+   "bytes": 661225472
+  },
+  "output": {
+   "type": "Q8_0",
+   "params": 622329856,
+   "bytes": 661225472
+  }
+ },
+ "qwen3-14b-q4km": {
+  "tensor_bytes_total": 8995793920,
+  "params_total": 14768307200,
+  "token_embd": {
+   "type": "Q4_K",
+   "params": 777912320,
+   "bytes": 437575680
+  },
+  "output": {
+   "type": "Q6_K",
+   "params": 777912320,
+   "bytes": 638131200
+  }
+ },
+ "qwen3-14b-q8": {
+  "tensor_bytes_total": 15692574720,
+  "params_total": 14768307200,
+  "token_embd": {
+   "type": "Q8_0",
+   "params": 777912320,
+   "bytes": 826531840
+  },
+  "output": {
+   "type": "Q8_0",
+   "params": 777912320,
+   "bytes": 826531840
+  }
+ },
+ "llama31-8b-q4km": {
+  "tensor_bytes_total": 4912898304,
+  "params_total": 8030261312,
+  "token_embd": {
+   "type": "Q4_K",
+   "params": 525336576,
+   "bytes": 295501824
+  },
+  "output": {
+   "type": "Q6_K",
+   "params": 525336576,
+   "bytes": 430940160
+  }
+ },
+ "llama31-8b-q8": {
+  "tensor_bytes_total": 8532934912,
+  "params_total": 8030261312,
+  "token_embd": {
+   "type": "Q8_0",
+   "params": 525336576,
+   "bytes": 558170112
+  },
+  "output": {
+   "type": "Q8_0",
+   "params": 525336576,
+   "bytes": 558170112
+  }
+ },
+ "gemma3-12b-q4km": {
+  "tensor_bytes_total": 7294024704,
+  "params_total": 11765788416,
+  "token_embd": {
+   "type": "Q6_K",
+   "params": 1006632960,
+   "bytes": 825753600
+  },
+  "output": null
+ },
+ "gemma3-12b-q8": {
+  "tensor_bytes_total": 12503399424,
+  "params_total": 11765788416,
+  "token_embd": {
+   "type": "Q8_0",
+   "params": 1006632960,
+   "bytes": 1069547520
+  },
+  "output": null
+ }
+}

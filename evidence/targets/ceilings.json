@@ -1,0 +1,262 @@
+{
+ "bandwidth_bytes_per_s": 672000000000.0,
+ "peak_tensor_ops_dense": {
+  "fp16_fp32acc": 61700000000000.0,
+  "fp16_fp16acc": 123500000000000.0,
+  "int8": 246900000000000.0,
+  "fp8_fp32acc": 123500000000000.0,
+  "fp4_fp32acc": 493900000000000.0
+ },
+ "models": {
+  "qwen3-4b": {
+   "arch": {
+    "layers": 36,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "tied": true,
+    "name": "Qwen3-4B"
+   },
+   "kv_cache_bytes_per_context_token_fp16": 147456,
+   "Q4_K_M": {
+    "file_bytes": 2497280256,
+    "tensor_bytes_total": 2491323904,
+    "token_embd_bytes": 319065600,
+    "token_embd_type": "Q6_K",
+    "weight_bytes_read_per_token": 2491323904,
+    "ceiling_tok_s_ctx0": 269.7361025280798,
+    "ceiling_tok_s_ctx4096_fp16kv": 217.10309212697348,
+    "ceiling_tok_s_ctx16384_fp16kv": 136.94043659636918,
+    "ceiling_tok_s_ctx32768_fp16kv": 91.76363840134528
+   },
+   "Q8_0": {
+    "file_bytes": 4280404704,
+    "tensor_bytes_total": 4274448384,
+    "token_embd_bytes": 413265920,
+    "token_embd_type": "Q8_0",
+    "weight_bytes_read_per_token": 4274448384,
+    "ceiling_tok_s_ctx0": 157.21326815301182,
+    "ceiling_tok_s_ctx4096_fp16kv": 137.7492868522635,
+    "ceiling_tok_s_ctx16384_fp16kv": 100.44291306947115,
+    "ceiling_tok_s_ctx32768_fp16kv": 73.79517361010375
+   },
+   "params_total": 4022468096,
+   "params_matmul_per_token": 4022468096,
+   "NVFP4_ideal_4.5bpw": {
+    "weight_bytes_read_per_token": 2262638304.0,
+    "ceiling_tok_s_ctx0": 296.9984194168402
+   },
+   "FP8_ideal_8bpw": {
+    "weight_bytes_read_per_token": 4022468096.0,
+    "ceiling_tok_s_ctx0": 167.06161092197263
+   },
+   "prefill_flops_per_token_matmul_only": 8044936192,
+   "prefill_ceiling_tok_s": {
+    "fp16_fp32acc": 7669.420679974487,
+    "fp16_fp16acc": 15351.271539333049,
+    "int8": 30690.112899282023,
+    "fp8_fp32acc": 15351.271539333049,
+    "fp4_fp32acc": 61392.655977948125
+   }
+  },
+  "qwen3-8b": {
+   "arch": {
+    "layers": 36,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "tied": false,
+    "name": "Qwen3-8B"
+   },
+   "kv_cache_bytes_per_context_token_fp16": 147456,
+   "Q4_K_M": {
+    "file_bytes": 5027783488,
+    "tensor_bytes_total": 5021827072,
+    "token_embd_bytes": 350060544,
+    "token_embd_type": "Q4_K",
+    "weight_bytes_read_per_token": 4671766528,
+    "ceiling_tok_s_ctx0": 143.84280463768928,
+    "ceiling_tok_s_ctx4096_fp16kv": 127.3753439376906,
+    "ceiling_tok_s_ctx16384_fp16kv": 94.81233154106121,
+    "ceiling_tok_s_ctx32768_fp16kv": 70.71001148168963
+   },
+   "Q8_0": {
+    "file_bytes": 8709518112,
+    "tensor_bytes_total": 8703561728,
+    "token_embd_bytes": 661225472,
+    "token_embd_type": "Q8_0",
+    "weight_bytes_read_per_token": 8042336256,
+    "ceiling_tok_s_ctx0": 83.55780939881159,
+    "ceiling_tok_s_ctx4096_fp16kv": 77.72096202740326,
+    "ceiling_tok_s_ctx16384_fp16kv": 64.25545914380886,
+    "ceiling_tok_s_ctx32768_fp16kv": 52.19752162588062
+   },
+   "params_total": 8190735360,
+   "params_matmul_per_token": 7568405504,
+   "NVFP4_ideal_4.5bpw": {
+    "weight_bytes_read_per_token": 4257228096.0,
+    "ceiling_tok_s_ctx0": 157.84918844996741
+   },
+   "FP8_ideal_8bpw": {
+    "weight_bytes_read_per_token": 7568405504.0,
+    "ceiling_tok_s_ctx0": 88.79016850310667
+   },
+   "prefill_flops_per_token_matmul_only": 15136811008,
+   "prefill_ceiling_tok_s": {
+    "fp16_fp32acc": 4076.15580107268,
+    "fp16_fp16acc": 8158.918013492317,
+    "int8": 16311.229615637678,
+    "fp8_fp32acc": 8158.918013492317,
+    "fp4_fp32acc": 32629.06564262231
+   }
+  },
+  "qwen3-14b": {
+   "arch": {
+    "layers": 40,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "tied": false,
+    "name": "Qwen3-14B"
+   },
+   "kv_cache_bytes_per_context_token_fp16": 163840,
+   "Q4_K_M": {
+    "file_bytes": 9001752960,
+    "tensor_bytes_total": 8995793920,
+    "token_embd_bytes": 437575680,
+    "token_embd_type": "Q4_K",
+    "weight_bytes_read_per_token": 8558218240,
+    "ceiling_tok_s_ctx0": 78.52101701019487,
+    "ceiling_tok_s_ctx4096_fp16kv": 72.81153490044098,
+    "ceiling_tok_s_ctx16384_fp16kv": 59.77279506697969,
+    "ceiling_tok_s_ctx32768_fp16kv": 48.25184928658952
+   },
+   "Q8_0": {
+    "file_bytes": 15698533728,
+    "tensor_bytes_total": 15692574720,
+    "token_embd_bytes": 826531840,
+    "token_embd_type": "Q8_0",
+    "weight_bytes_read_per_token": 14866042880,
+    "ceiling_tok_s_ctx0": 45.20369041206479,
+    "ceiling_tok_s_ctx4096_fp16kv": 43.251226851943386,
+    "ceiling_tok_s_ctx16384_fp16kv": 38.289731175455366,
+    "ceiling_tok_s_ctx32768_fp16kv": 33.21019204979631
+   },
+   "params_total": 14768307200,
+   "params_matmul_per_token": 13990394880,
+   "NVFP4_ideal_4.5bpw": {
+    "weight_bytes_read_per_token": 7869597120.0,
+    "ceiling_tok_s_ctx0": 85.39191902113535
+   },
+   "FP8_ideal_8bpw": {
+    "weight_bytes_read_per_token": 13990394880.0,
+    "ceiling_tok_s_ctx0": 48.03295444938863
+   },
+   "prefill_flops_per_token_matmul_only": 27980789760,
+   "prefill_ceiling_tok_s": {
+    "fp16_fp32acc": 2205.0842928030347,
+    "fp16_fp16acc": 4413.742466145459,
+    "int8": 8823.91105175153,
+    "fp8_fp32acc": 4413.742466145459,
+    "fp4_fp32acc": 17651.395984042447
+   }
+  },
+  "llama31-8b": {
+   "arch": {
+    "layers": 32,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "tied": false,
+    "name": "Llama 3.1 8B"
+   },
+   "kv_cache_bytes_per_context_token_fp16": 131072,
+   "Q4_K_M": {
+    "file_bytes": 4920739232,
+    "tensor_bytes_total": 4912898304,
+    "token_embd_bytes": 295501824,
+    "token_embd_type": "Q4_K",
+    "weight_bytes_read_per_token": 4617396480,
+    "ceiling_tok_s_ctx0": 145.5365600313361,
+    "ceiling_tok_s_ctx4096_fp16kv": 130.37740359435352,
+    "ceiling_tok_s_ctx16384_fp16kv": 99.33657171818551,
+    "ceiling_tok_s_ctx32768_fp16kv": 75.40087196727998
+   },
+   "Q8_0": {
+    "file_bytes": 8540775840,
+    "tensor_bytes_total": 8532934912,
+    "token_embd_bytes": 558170112,
+    "token_embd_type": "Q8_0",
+    "weight_bytes_read_per_token": 7974764800,
+    "ceiling_tok_s_ctx0": 84.26580806496011,
+    "ceiling_tok_s_ctx4096_fp16kv": 78.95074727559017,
+    "ceiling_tok_s_ctx16384_fp16kv": 66.38841196718273,
+    "ceiling_tok_s_ctx32768_fp16kv": 54.7689219896721
+   },
+   "params_total": 8030261312,
+   "params_matmul_per_token": 7504924736,
+   "NVFP4_ideal_4.5bpw": {
+    "weight_bytes_read_per_token": 4221520164.0,
+    "ceiling_tok_s_ctx0": 159.18436342686152
+   },
+   "FP8_ideal_8bpw": {
+    "weight_bytes_read_per_token": 7504924736.0,
+    "ceiling_tok_s_ctx0": 89.5412044276096
+   },
+   "prefill_flops_per_token_matmul_only": 15009849472,
+   "prefill_ceiling_tok_s": {
+    "fp16_fp32acc": 4110.634161594875,
+    "fp16_fp16acc": 8227.930615185853,
+    "int8": 16449.1989383756,
+    "fp8_fp32acc": 8227.930615185853,
+    "fp4_fp32acc": 32905.06016874731
+   }
+  },
+  "gemma3-12b": {
+   "arch": {
+    "layers": 48,
+    "kv_heads": 8,
+    "head_dim": 256,
+    "tied": true,
+    "name": "Gemma 3 12B"
+   },
+   "kv_cache_bytes_per_context_token_fp16": 393216,
+   "Q4_K_M": {
+    "file_bytes": 7300575264,
+    "tensor_bytes_total": 7294024704,
+    "token_embd_bytes": 825753600,
+    "token_embd_type": "Q6_K",
+    "weight_bytes_read_per_token": 7294024704,
+    "ceiling_tok_s_ctx0": 92.13020619898356,
+    "ceiling_tok_s_ctx4096_fp16kv": 85.0847833401077,
+    "ceiling_tok_s_ctx16384_fp16kv": 77.21199572624985,
+    "ceiling_tok_s_ctx32768_fp16kv": 68.73236981984421
+   },
+   "Q8_0": {
+    "file_bytes": 12509949984,
+    "tensor_bytes_total": 12503399424,
+    "token_embd_bytes": 1069547520,
+    "token_embd_type": "Q8_0",
+    "weight_bytes_read_per_token": 12503399424,
+    "ceiling_tok_s_ctx0": 53.74538373221212,
+    "ceiling_tok_s_ctx4096_fp16kv": 51.26883030896062,
+    "ceiling_tok_s_ctx16384_fp16kv": 48.301242539804086,
+    "ceiling_tok_s_ctx32768_fp16kv": 44.8405735685027
+   },
+   "params_total": 11765788416,
+   "params_matmul_per_token": 11765788416,
+   "NVFP4_ideal_4.5bpw": {
+    "weight_bytes_read_per_token": 6618255984.0,
+    "ceiling_tok_s_ctx0": 101.53732367327544
+   },
+   "FP8_ideal_8bpw": {
+    "weight_bytes_read_per_token": 11765788416.0,
+    "ceiling_tok_s_ctx0": 57.11474456621743
+   },
+   "prefill_flops_per_token_matmul_only": 23531576832,
+   "prefill_ceiling_tok_s": {
+    "fp16_fp32acc": 2622.008734922333,
+    "fp16_fp16acc": 5248.267078815366,
+    "int8": 10492.284548660033,
+    "fp8_fp32acc": 5248.267078815366,
+    "fp4_fp32acc": 20988.818706290767
+   }
+  }
+ }
+}
