@@ -1,0 +1,54 @@
+[package]
+name = "aien-rig-tuner"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-only"
+description = "AIEN Rig FPS tuner: measures frame rates with ETW, applies only safe reversible Windows changes, keeps receipts."
+repository = "https://github.com/aien-dev/aien-rig"
+publish = false
+
+# This crate is its own workspace root on purpose, so it builds the same way
+# whether or not the repo grows a top-level Cargo workspace. If a top-level
+# workspace is added later, it should list "tuner" under `exclude`.
+[workspace]
+
+[lib]
+name = "aien_rig_tuner"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rig-tune"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(windows)'.dependencies]
+windows-registry = "0.6"
+windows = { version = "0.62", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Diagnostics_Etw",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Performance",
+    "Win32_System_Power",
+    "Win32_System_Registry",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    "Win32_System_Console",
+    "Win32_System_Time",
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+    "Win32_Graphics_Direct3D",
+    "Win32_Graphics_Direct3D11",
+    "Win32_Graphics_Gdi",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
