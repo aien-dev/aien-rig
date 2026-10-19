@@ -22,14 +22,24 @@ Options: `--model DIR`, `--out FILE`, `--language CODE|auto`, `--backend cpu|ome
 
 ## Output
 
+`aien-rig-transcript/1`, the shape `rig-create` reads (defined in `creator/TRANSCRIPT.md`
+on branch `creator/v0`):
+
 ```json
-{"segments": [{"start": 0.0, "end": 5.68, "text": "..."}], "language": "en"}
+{
+  "schema": "aien-rig-transcript/1",
+  "language": "en",
+  "duration": 276.245,
+  "source": "1089-134686.mp4",
+  "segments": [
+    {"id": 0, "start": 0.0, "end": 5.64, "text": "He hoped there would be stew for dinner, ...",
+     "avg_logprob": -0.21, "no_speech_prob": 0.002}
+  ]
+}
 ```
 
-Times are seconds from the start of the file. This is the fallback shape from the task:
-`creator/TRANSCRIPT.md` did not exist on `creator/v0` when this was written
-(checked 2026-10-19). If the creator stream defines a different shape, `to_json` in
-`src/transcribe.rs` is the one place to change.
+Times are seconds from the start of the file. `id`, `avg_logprob` and `no_speech_prob` are
+extra fields the schema allows. Word times (`words`) are not written yet.
 
 ## What is inside
 

@@ -76,6 +76,10 @@ pub struct Segment {
     pub start: f64,
     pub end: f64,
     pub text: String,
+    /// average token log-probability of the window this segment came from
+    pub avg_logprob: f32,
+    /// probability of <|nospeech|> for that window
+    pub no_speech_prob: f32,
 }
 
 pub struct Options {
@@ -337,7 +341,7 @@ pub fn transcribe(model: &Whisper, tok: &Tokenizer, sp: &Specials, mel_all: &[f3
                 if opts.verbose {
                     eprintln!("[{} --> {}] {}", hms(start), hms(end), text);
                 }
-                segments.push(Segment { start, end, text });
+                segments.push(Segment { start, end, text, avg_logprob: r.avg_logprob, no_speech_prob: r.no_speech_prob });
             }
         };
         if !consecutive.is_empty() {
@@ -380,14 +384,32 @@ pub fn hms(t: f64) -> String {
     format!("{:02}:{:02}:{:02}.{:03}", ms / 3_600_000, ms / 60_000 % 60, ms / 1000 % 60, ms % 1000)
 }
 
-/// Transcript JSON for the creator tool.
-pub fn to_json(t: &Transcript) -> Value {
+/// Transcript JSON for the creator tool: `aien-rig-transcript/1` as defined in
+/// aien-rig `creator/TRANSCRIPT.md` (branch creator/v0, commit 7aef4de). `id`,
+/// `avg_logprob` and `no_speech_prob` are extra fields the schema allows.
+pub fn to_json(t: &Transcript, duration: f64, source: &str) -> Value {
     let segs: Vec<Value> = t
         .segments
         .iter()
-        .map(|s| serde_json::json!({"start": round3(s.start), "end": round3(s.end), "text": s.text}))
+        .enumerate()
+        .map(|(i, s)| {
+            serde_json::json!({
+                "id": i,
+                "start": round3(s.start),
+                "end": round3(s.end),
+                "text": s.text,
+                "avg_logprob": (s.avg_logprob as f64 * 1000.0).round() / 1000.0,
+                "no_speech_prob": (s.no_speech_prob as f64 * 1000.0).round() / 1000.0
+            })
+        })
         .collect();
-    serde_json::json!({"segments": segs, "language": t.language})
+    serde_json::json!({
+        "schema": "aien-rig-transcript/1",
+        "language": t.language,
+        "duration": round3(duration),
+        "source": source,
+        "segments": segs
+    })
 }
 
 fn round3(x: f64) -> f64 {

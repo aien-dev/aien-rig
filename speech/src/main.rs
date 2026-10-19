@@ -238,7 +238,8 @@ fn main() {
     let opts = transcribe::Options { language, no_speech_threshold: 0.6, logprob_threshold: -1.0, verbose: !quiet };
     let tr = transcribe::transcribe(&m, &tok, &sp, &mel_all, frames, &opts);
     let transcribe_s = t.elapsed().as_secs_f64();
-    let doc = transcribe::to_json(&tr);
+    let source = input.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+    let doc = transcribe::to_json(&tr, audio_s, &source);
     std::fs::write(&out, serde_json::to_string_pretty(&doc).unwrap() + "\n").unwrap_or_else(|e| die(&format!("{}: {e}", out.display())));
     let total_s = t_all.elapsed().as_secs_f64();
     let process_s = decode_s + mel_s + transcribe_s;
