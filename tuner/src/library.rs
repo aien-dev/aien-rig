@@ -107,10 +107,8 @@ pub fn parse_gaming_root(bytes: &[u8]) -> Vec<String> {
         return Vec::new();
     }
     let count = u32::from_le_bytes([bytes[4], bytes[5], bytes[6], bytes[7]]) as usize;
-    let units: Vec<u16> = bytes[8..]
-        .chunks_exact(2)
-        .map(|c| u16::from_le_bytes([c[0], c[1]]))
-        .collect();
+    let (pairs, _) = bytes[8..].as_chunks::<2>();
+    let units: Vec<u16> = pairs.iter().map(|c| u16::from_le_bytes(*c)).collect();
     units
         .split(|u| *u == 0)
         .filter(|s| !s.is_empty())
