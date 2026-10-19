@@ -163,6 +163,7 @@ impl UndoLog {
     }
 }
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum ApplyOutcome {
     /// Already at the wanted value; nothing written, nothing logged.
@@ -170,6 +171,7 @@ pub enum ApplyOutcome {
     Applied(Entry),
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn apply_change(
     log: &mut UndoLog,
     sink: &mut dyn LogSink,

@@ -12,6 +12,7 @@
 //!    Their video memory stays allocated while suspended. `game-mode off`
 //!    resumes exactly the processes it suspended, after checking each PID
 //!    still belongs to the same program.
+//!
 //! Pure logic here; the thread suspension is in win::procs.
 
 use serde::{Deserialize, Serialize};

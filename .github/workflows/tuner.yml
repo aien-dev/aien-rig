@@ -1,0 +1,52 @@
+name: tuner
+
+on:
+  push:
+    branches: ["tuner/**"]
+    paths: ["tuner/**", ".github/workflows/tuner.yml"]
+  pull_request:
+    paths: ["tuner/**", ".github/workflows/tuner.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: rig-tune (windows, x86_64-pc-windows-msvc)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: tuner
+    env:
+      CARGO_TERM_COLOR: always
+      AIEN_RIG_HOME: ${{ runner.temp }}\aien-rig
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust toolchain
+        run: |
+          rustup default stable
+          rustup component add clippy
+          rustc --version
+          cargo --version
+      - name: Build (release)
+        run: cargo build --release --locked
+      - name: Unit and Windows OS tests
+        run: cargo test --release --locked
+      - name: Clippy
+        run: cargo clippy --release --locked --all-targets -- -D warnings
+      - name: End-to-end (scan, ETW frame counter, apply/undo, game mode)
+        shell: pwsh
+        run: ./ci/windows-e2e.ps1
+      - name: Upload rig-tune.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: rig-tune-windows-x64
+          path: tuner/target/release/rig-tune.exe
+      - name: Upload CI receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rig-tune-ci-receipts
+          path: ${{ runner.temp }}\aien-rig
