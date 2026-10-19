@@ -3,7 +3,7 @@
 use anyhow::{bail, Result};
 use windows::core::GUID;
 use windows::Win32::Foundation::{LocalFree, HLOCAL};
-use windows::Win32::System::Power::{PowerGetActiveScheme, PowerSetActiveScheme};
+use windows::Win32::System::Power::{PowerGetActiveScheme, PowerReadFriendlyName, PowerSetActiveScheme};
 
 pub fn guid_to_string(g: &GUID) -> String {
     format!("{g:?}").to_ascii_lowercase()
@@ -28,6 +28,15 @@ pub fn active_scheme() -> Result<String> {
         let _ = LocalFree(Some(HLOCAL(p as _)));
         Ok(s)
     }
+}
+
+/// Does this PC offer the plan? Windows hides High performance on many
+/// newer PCs (Modern Standby), and switching to a missing plan fails.
+pub fn scheme_exists(guid: &str) -> bool {
+    let Ok(g) = parse_guid(guid) else { return false };
+    let mut size = 0u32;
+    let rc = unsafe { PowerReadFriendlyName(None, Some(&g), None, None, None, &mut size) };
+    rc.0 == 0 || rc.0 == 234 // ERROR_SUCCESS or ERROR_MORE_DATA
 }
 
 pub fn set_active_scheme(guid: &str) -> Result<()> {

@@ -89,6 +89,9 @@ pub struct ScanFacts {
     /// ...\GameDVR\HistoricalCaptureEnabled ("Record what happened").
     pub background_recording: Option<u32>,
     pub power_scheme: Option<String>,
+    /// Whether the High performance plan exists on this PC (None = unknown).
+    #[serde(default)]
+    pub power_high_available: Option<bool>,
     pub dx_global_settings: Option<String>,
     pub displays: Vec<DisplayFacts>,
     pub hogs: Vec<ProcessHog>,
@@ -320,13 +323,25 @@ pub fn evaluate(s: &ScanFacts) -> Vec<Finding> {
     }
 
     // Power plan
+    let high_ok = s.power_high_available != Some(false);
     match s.power_scheme.as_deref() {
         Some(g) if g.eq_ignore_ascii_case(POWER_SAVER) => out.push(f(
             "Power plan",
             Status::Problem,
             "Windows is on the Power saver plan, which slows the CPU.".into(),
-            "Switch to High performance. rig-tune apply can do this.",
+            if high_ok {
+                "Switch to High performance. rig-tune apply can do this."
+            } else {
+                "Switch to Balanced (High performance is not offered on this PC). rig-tune apply can do this."
+            },
             Some("power-plan-high"),
+        )),
+        Some(g) if g.eq_ignore_ascii_case(POWER_BALANCED) && !high_ok => out.push(f(
+            "Power plan",
+            Status::Good,
+            "Windows is on Balanced; this PC does not offer the High performance plan.".into(),
+            "Nothing to do. Settings > System > Power > Power mode \"Best performance\" is the closest switch if you want it.",
+            None,
         )),
         Some(g) if g.eq_ignore_ascii_case(POWER_BALANCED) => out.push(f(
             "Power plan",

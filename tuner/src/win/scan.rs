@@ -53,7 +53,10 @@ pub fn facts(with_hogs: bool, with_games: bool) -> ScanFacts {
         ..Default::default()
     };
     match power::active_scheme() {
-        Ok(g) => s.power_scheme = Some(g),
+        Ok(g) => {
+            s.power_scheme = Some(g);
+            s.power_high_available = Some(power::scheme_exists(crate::findings::POWER_HIGH));
+        }
         Err(e) => s.notes.push(format!("power plan: {e:#}")),
     }
     let running = procs::list();

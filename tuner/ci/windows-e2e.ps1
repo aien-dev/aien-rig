@@ -47,7 +47,11 @@ Set-ItemProperty -Path $gb -Name AutoGameModeEnabled -Value 0 -Type DWord
 Set-ItemProperty -Path $dvr -Name HistoricalCaptureEnabled -Value 1 -Type DWord
 Set-ItemProperty -Path $dx -Name DirectXUserGlobalSettings -Value 'VRROptimizeEnable=0;' -Type String
 Remove-ItemProperty -Path $gd -Name HwSchMode -ErrorAction SilentlyContinue
-powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e  # Balanced
+# Power saver, so the power-plan tweak has work to do (falls back to Balanced
+# if this machine does not offer Power saver).
+powercfg /setactive a1841308-3bce-4d2e-b8c3-6b0e5ee2d0d5
+if ($LASTEXITCODE -ne 0) { powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e }
+$global:LASTEXITCODE = 0
 
 function Snapshot {
     [ordered]@{
@@ -69,6 +73,8 @@ if ($a.GameMode -ne 1) { Fail 'game mode not turned on' }
 if ($a.BackgroundRecording -ne 0) { Fail 'background recording not turned off' }
 if ($a.DxGlobal -ne 'VRROptimizeEnable=0;SwapEffectUpgradeEnable=1;') { Fail "windowed optimizations wrong: $($a.DxGlobal)" }
 if ($a.Hags -ne 2) { Fail 'HAGS not set' }
+$b = $before | ConvertFrom-Json
+if ($b.Power -match 'a1841308' -and $a.Power -match 'a1841308') { Fail 'still on Power saver after apply' }
 & $exe undo --list
 & $exe undo --yes
 if ($LASTEXITCODE -ne 0) { Fail 'undo exited non-zero' }

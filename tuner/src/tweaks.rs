@@ -112,7 +112,19 @@ pub fn propose(s: &ScanFacts) -> Vec<Proposal> {
         });
     }
     if let Some(p) = s.power_scheme.as_deref() {
-        if p.eq_ignore_ascii_case(POWER_SAVER) || p.eq_ignore_ascii_case(POWER_BALANCED) {
+        let high_ok = s.power_high_available != Some(false);
+        let saver = p.eq_ignore_ascii_case(POWER_SAVER);
+        if saver && !high_ok {
+            out.push(Proposal {
+                tweak: "power-plan-high".into(),
+                title: "Switch the power plan from Power saver to Balanced".into(),
+                why: "Power saver holds the CPU back. This PC does not offer High performance, so Balanced is the best plan available.".into(),
+                setting: Setting::PowerScheme,
+                new: Value::Guid(POWER_BALANCED.into()),
+                needs_admin: false,
+                needs_reboot: false,
+            });
+        } else if high_ok && (saver || p.eq_ignore_ascii_case(POWER_BALANCED)) {
             out.push(Proposal {
                 tweak: "power-plan-high".into(),
                 title: "Switch the power plan to High performance".into(),
@@ -171,5 +183,18 @@ mod tests {
         let h = p.iter().find(|x| x.tweak == "hags-on").unwrap();
         assert!(h.needs_admin && h.needs_reboot);
         assert!(p.iter().all(|x| ALL_TWEAKS.contains(&x.tweak.as_str())));
+    }
+
+    #[test]
+    fn power_plan_respects_what_the_pc_offers() {
+        let mut s = ScanFacts { power_scheme: Some(POWER_BALANCED.into()), power_high_available: Some(false), ..Default::default() };
+        assert!(!propose(&s).iter().any(|p| p.tweak == "power-plan-high"));
+        s.power_scheme = Some(POWER_SAVER.into());
+        let p = propose(&s);
+        let pp = p.iter().find(|p| p.tweak == "power-plan-high").unwrap();
+        assert_eq!(pp.new, Value::Guid(POWER_BALANCED.into()));
+        s.power_high_available = Some(true);
+        let p = propose(&s);
+        assert_eq!(p.iter().find(|p| p.tweak == "power-plan-high").unwrap().new, Value::Guid(POWER_HIGH.into()));
     }
 }

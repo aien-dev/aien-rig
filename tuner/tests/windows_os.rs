@@ -47,6 +47,8 @@ fn power_plan_guid_round_trip() {
     assert_eq!(power::guid_to_string(&parsed), g);
     let active = power::active_scheme().unwrap();
     assert_eq!(active.len(), 36, "{active}");
+    assert!(power::scheme_exists(&active), "the active plan must exist");
+    assert!(!power::scheme_exists("00000000-0000-0000-0000-000000000001"));
 }
 
 #[test]
