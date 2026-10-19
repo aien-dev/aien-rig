@@ -322,7 +322,11 @@ impl Whisper {
             let v = l.v.forward(&h, t_out);
             mm += tm.elapsed().as_secs_f64();
             let ta = Instant::now();
-            let a = attention_full(&q, &k, &v, t_out, c.enc_heads, d / c.enc_heads);
+            let a = if self.backend == Backend::Omega {
+                crate::omega::attention_full(&q, &k, &v, t_out, t_out, c.enc_heads, d / c.enc_heads).unwrap_or_else(|e| panic!("{e}"))
+            } else {
+                attention_full(&q, &k, &v, t_out, c.enc_heads, d / c.enc_heads)
+            };
             attn_s += ta.elapsed().as_secs_f64();
             let tm = Instant::now();
             let o = l.o.forward(&a, t_out);
@@ -399,7 +403,7 @@ impl Whisper {
 }
 
 /// Full (non-causal) multi-head attention for the encoder, with the CPU matmul.
-fn attention_full(q: &[f32], k: &[f32], v: &[f32], t: usize, heads: usize, hd: usize) -> Vec<f32> {
+pub fn attention_full(q: &[f32], k: &[f32], v: &[f32], t: usize, heads: usize, hd: usize) -> Vec<f32> {
     let d = heads * hd;
     let scale = 1.0 / (hd as f32).sqrt();
     let mut out = vec![0f32; t * d];

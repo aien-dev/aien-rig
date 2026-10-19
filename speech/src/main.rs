@@ -11,6 +11,7 @@ rig-listen: speech to text for AIEN Rig (Whisper-family model, our own runtime)
 USAGE:
   rig-listen [OPTIONS] <video-or-audio-file>
   rig-listen wer <reference.txt> <transcript.json or .txt>
+  rig-listen gpu-selftest            (Omega build: GPU vs CPU parity and speed)
 
 OPTIONS:
   --model DIR        model folder (config.json, model.safetensors, tokenizer.json)
@@ -67,10 +68,91 @@ fn wer_cmd(args: &[String]) {
     );
 }
 
+/// Parity and speed of the Omega GPU paths against our CPU paths, on the shapes the
+/// whisper-large-v3-turbo encoder uses (1500 rows, d=1280, 20 heads of 64, MLP 5120).
+fn gpu_selftest() {
+    use aien_rig_speech::gemm::{matmul, PackedB};
+    use std::time::Instant;
+    fn rnd(n: usize, seed: u64, scale: f32) -> Vec<f32> {
+        let mut s = seed;
+        (0..n)
+            .map(|_| {
+                s = s.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+                (((s >> 33) as f32 / (1u64 << 31) as f32) - 0.5) * scale
+            })
+            .collect()
+    }
+    fn err(a: &[f32], b: &[f32]) -> (f32, f32) {
+        let mut max_abs = 0f32;
+        let mut max_ref = 0f32;
+        for (x, y) in a.iter().zip(b) {
+            max_abs = max_abs.max((x - y).abs());
+            max_ref = max_ref.max(y.abs());
+        }
+        (max_abs, max_abs / max_ref.max(1e-30))
+    }
+    let mut results = Vec::new();
+    for &(m, k, n) in &[(1500usize, 1280usize, 1280usize), (1500, 1280, 5120), (1500, 5120, 1280), (3000, 384, 1280)] {
+        let a = rnd(m * k, 1 + m as u64 + k as u64, 2.0);
+        let w = rnd(n * k, 9 + n as u64, 0.1);
+        // the GPU sees bf16 inputs; compare against the CPU result on the same bf16-rounded inputs
+        let a16: Vec<f32> = a.iter().map(|&x| half::bf16::from_f32(x).to_f32()).collect();
+        let w16: Vec<f32> = w.iter().map(|&x| half::bf16::from_f32(x).to_f32()).collect();
+        let pb = PackedB::from_rows(&w16, n, k);
+        let mut c_cpu = vec![0f32; m * n];
+        let t = Instant::now();
+        matmul(&a16, m, &pb, &mut c_cpu);
+        let cpu_s = t.elapsed().as_secs_f64();
+        let r = omega::Resident::upload_rows(&w, n, k).unwrap_or_else(|e| die(&e));
+        let mut c_gpu = vec![0f32; m * n];
+        r.matmul(&a, m, &mut c_gpu).unwrap_or_else(|e| die(&e)); // warm-up (kernel generation)
+        let t = Instant::now();
+        let reps = 5;
+        for _ in 0..reps {
+            r.matmul(&a, m, &mut c_gpu).unwrap_or_else(|e| die(&e));
+        }
+        let gpu_s = t.elapsed().as_secs_f64() / reps as f64;
+        let (ea, er) = err(&c_gpu, &c_cpu);
+        let gflop = 2.0 * (m * k * n) as f64 / 1e9;
+        results.push(json!({"op": "matmul", "m": m, "k": k, "n": n, "max_abs_err": ea, "max_err_over_max_ref": er,
+            "cpu_s": cpu_s, "gpu_s": gpu_s, "cpu_gflops": gflop / cpu_s, "gpu_gflops": gflop / gpu_s}));
+    }
+    for &(t_len, heads, hd) in &[(1500usize, 20usize, 64usize), (1500, 6, 64)] {
+        let d = heads * hd;
+        let q = rnd(t_len * d, 3, 2.0);
+        let k = rnd(t_len * d, 4, 2.0);
+        let v = rnd(t_len * d, 5, 2.0);
+        let t = Instant::now();
+        let o_cpu = model::attention_full(&q, &k, &v, t_len, heads, hd);
+        let cpu_s = t.elapsed().as_secs_f64();
+        let _ = omega::attention_full(&q, &k, &v, t_len, t_len, heads, hd).unwrap_or_else(|e| die(&e));
+        let t = Instant::now();
+        let o_gpu = omega::attention_full(&q, &k, &v, t_len, t_len, heads, hd).unwrap_or_else(|e| die(&e));
+        let gpu_s = t.elapsed().as_secs_f64();
+        let (ea, er) = err(&o_gpu, &o_cpu);
+        results.push(json!({"op": "attention_full", "rows": t_len, "kv_len": t_len, "heads": heads, "head_dim": hd,
+            "max_abs_err": ea, "max_err_over_max_ref": er, "cpu_s": cpu_s, "gpu_s": gpu_s}));
+    }
+    println!("{}", serde_json::to_string_pretty(&json!({
+        "tool": "rig-listen gpu-selftest",
+        "git_sha": option_env!("RIG_GIT_SHA").unwrap_or("unknown"),
+        "omega_gpu_lib": option_env!("RIG_OMEGA_GPU_LIB"),
+        "threads": rayon::current_num_threads(),
+        "load_average_at_end": std::fs::read_to_string("/proc/loadavg").ok().map(|s| s.trim().to_string()),
+        "results": results
+    })).unwrap());
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args.first().map(|s| s.as_str()) == Some("wer") {
         return wer_cmd(&args[1..]);
+    }
+    if args.first().map(|s| s.as_str()) == Some("gpu-selftest") {
+        if !omega::AVAILABLE {
+            die("gpu-selftest needs a build with --features omega");
+        }
+        return gpu_selftest();
     }
     let mut input = None;
     let mut model_dir = std::env::var("RIG_SPEECH_MODEL").ok().map(PathBuf::from);

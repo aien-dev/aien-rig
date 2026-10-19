@@ -13,6 +13,58 @@ mod imp {
         fn omega_gpu_matmul_resident_f32(m: u32, a: *const f32, b: *const c_void, c: *mut f32, info: *mut c_void) -> c_int;
         fn omega_gpu_matmul_last_error() -> *const c_char;
         fn omega_gpu_matmul_rc_name(rc: c_int) -> *const c_char;
+        // rig/speech addition to omega src/omega_gpu_attention_api.h: no mask, many rows.
+        fn omega_gpu_attention_full_rows_f32(
+            q: *const f32,
+            k: *const f32,
+            v: *const f32,
+            kv_len: u32,
+            num_rows: u32,
+            num_q_heads: u32,
+            num_kv_heads: u32,
+            head_dim: u32,
+            out: *mut f32,
+            info: *mut c_void,
+        ) -> c_int;
+        fn omega_gpu_attention_rc_name(rc: c_int) -> *const c_char;
+        fn omega_gpu_attention_last_error() -> *const c_char;
+    }
+
+    /// Bidirectional attention on the GPU: q [rows, heads*hd], k/v [kv_len, heads*hd],
+    /// every row attends to all kv_len keys, scale 1/sqrt(hd).
+    pub fn attention_full(q: &[f32], k: &[f32], v: &[f32], rows: usize, kv_len: usize, heads: usize, hd: usize) -> Result<Vec<f32>, String> {
+        let d = heads * hd;
+        assert!(q.len() >= rows * d && k.len() >= kv_len * d && v.len() >= kv_len * d);
+        let mut out = vec![0f32; rows * d];
+        let mut info = vec![0u64; 512]; // larger than OmegaGpuAttnInfo, 8-byte aligned
+        // SAFETY: lengths checked; info is a large writable buffer.
+        let rc = unsafe {
+            omega_gpu_attention_full_rows_f32(
+                q.as_ptr(),
+                k.as_ptr(),
+                v.as_ptr(),
+                kv_len as u32,
+                rows as u32,
+                heads as u32,
+                heads as u32,
+                hd as u32,
+                out.as_mut_ptr(),
+                info.as_mut_ptr() as *mut c_void,
+            )
+        };
+        if rc != 0 {
+            // SAFETY: static strings or NULL.
+            let (n, l) = unsafe {
+                let n = omega_gpu_attention_rc_name(rc);
+                let l = omega_gpu_attention_last_error();
+                (
+                    if n.is_null() { "?".to_string() } else { CStr::from_ptr(n).to_string_lossy().into_owned() },
+                    if l.is_null() { String::new() } else { CStr::from_ptr(l).to_string_lossy().into_owned() },
+                )
+            };
+            return Err(format!("omega gpu attention rc {rc} ({n}): {l}"));
+        }
+        Ok(out)
     }
 
     /// Omega's OmegaGpuMatmulInfo is about 200 bytes; we hand it a larger zeroed,
@@ -95,6 +147,9 @@ mod imp {
         pub fn matmul(&self, _a: &[f32], _m: usize, _c: &mut [f32]) -> Result<(), String> {
             Err("built without the `omega` feature".into())
         }
+    }
+    pub fn attention_full(_q: &[f32], _k: &[f32], _v: &[f32], _rows: usize, _kv_len: usize, _heads: usize, _hd: usize) -> Result<Vec<f32>, String> {
+        Err("built without the `omega` feature".into())
     }
     pub const AVAILABLE: bool = false;
 }
