@@ -21,11 +21,12 @@ jobs:
         working-directory: tuner
     env:
       CARGO_TERM_COLOR: always
-      AIEN_RIG_HOME: ${{ runner.temp }}\aien-rig
     steps:
       - uses: actions/checkout@v4
       - name: Rust toolchain
+        shell: pwsh
         run: |
+          "AIEN_RIG_HOME=$env:RUNNER_TEMP\aien-rig" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           rustup default stable
           rustup component add clippy
           rustc --version
