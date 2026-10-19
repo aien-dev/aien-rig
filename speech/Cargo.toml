@@ -27,6 +27,7 @@ serde_json = { version = "1", features = ["preserve_order"] }
 memmap2 = "0.9"
 half = "2"
 libm = "0.2"
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
 
 [profile.release]
 opt-level = 3

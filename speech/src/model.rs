@@ -60,6 +60,7 @@ pub struct Timing {
     pub encoder_attention_s: f64,
     pub decoder_s: f64,
     pub decoder_tokens: usize,
+    pub fallbacks: usize,
     pub windows: usize,
 }
 
@@ -86,6 +87,27 @@ impl Linear {
             (Some(PackedB::from_rows(&w, n, k)), None)
         };
         Ok(Self { n, k, cpu, gpu, bias })
+    }
+
+    /// q_proj, k_proj (no bias) and v_proj stacked: one matrix multiply instead of three.
+    fn load_qkv(st: &SafeTensors, prefix: &str, gpu: bool) -> Result<Self, String> {
+        let (q, qs) = st.f32(&format!("{prefix}.q_proj.weight"))?;
+        let (k, _) = st.f32(&format!("{prefix}.k_proj.weight"))?;
+        let (v, _) = st.f32(&format!("{prefix}.v_proj.weight"))?;
+        let (d, kk) = (qs[0], qs[1]);
+        let mut w = q;
+        w.extend_from_slice(&k);
+        w.extend_from_slice(&v);
+        let mut b = st.f32(&format!("{prefix}.q_proj.bias"))?.0;
+        b.extend(std::iter::repeat_n(0.0, d));
+        b.extend_from_slice(&st.f32(&format!("{prefix}.v_proj.bias"))?.0);
+        let n = 3 * d;
+        let (cpu, gpu) = if gpu {
+            (None, Some(Resident::upload_rows(&w, n, kk)?))
+        } else {
+            (Some(PackedB::from_rows(&w, n, kk)), None)
+        };
+        Ok(Self { n, k: kk, cpu, gpu, bias: Some(b) })
     }
 
     pub fn forward(&self, x: &[f32], m: usize) -> Vec<f32> {
@@ -119,21 +141,62 @@ impl LayerNorm {
         let d = self.w.len();
         let mut y = vec![0f32; x.len()];
         y.par_chunks_mut(d).zip(x.par_chunks(d)).for_each(|(o, r)| {
-            let mean = r.iter().map(|&v| v as f64).sum::<f64>() / d as f64;
-            let var = r.iter().map(|&v| (v as f64 - mean).powi(2)).sum::<f64>() / d as f64;
-            let inv = 1.0 / (var + 1e-5).sqrt();
+            // two passes in f32 with 8 partial sums (vectorizes; ample precision for d <= 1280)
+            let mut s = [0f32; 8];
+            for c in r.chunks(8) {
+                for (i, v) in c.iter().enumerate() {
+                    s[i] += v;
+                }
+            }
+            let mean = s.iter().sum::<f32>() / d as f32;
+            let mut s2 = [0f32; 8];
+            for c in r.chunks(8) {
+                for (i, v) in c.iter().enumerate() {
+                    s2[i] += (v - mean) * (v - mean);
+                }
+            }
+            let inv = 1.0 / (s2.iter().sum::<f32>() / d as f32 + 1e-5).sqrt();
             for i in 0..d {
-                o[i] = ((r[i] as f64 - mean) * inv) as f32 * self.w[i] + self.b[i];
+                o[i] = (r[i] - mean) * inv * self.w[i] + self.b[i];
             }
         });
         y
     }
 }
 
+/// e^x for the GELU, branch-free so it vectorizes: 2^(x log2 e) split into an integer
+/// power (exponent bits) and 2^f on [0, 1) from its Taylor series to degree 7
+/// (relative error below 2e-6).
+#[inline(always)]
+fn exp_fast(x: f32) -> f32 {
+    let x = x.clamp(-87.0, 88.0);
+    let t = x * std::f32::consts::LOG2_E;
+    let fi = t.floor();
+    let f = t - fi;
+    let p = 1.0
+        + f * (0.693_147_2
+            + f * (0.240_226_5
+                + f * (0.055_504_11 + f * (0.009_618_129 + f * (0.001_333_355 + f * (0.000_154_035_3 + f * 0.000_015_252_73))))));
+    p * f32::from_bits(((fi as i32 + 127) as u32) << 23)
+}
+
+/// erf by Abramowitz and Stegun 7.1.26 with exp_fast (absolute error below 2e-6 in f32;
+/// checked against libm erff in the tests).
+#[inline(always)]
+pub fn erf_fast(x: f32) -> f32 {
+    let a = x.abs();
+    let t = 1.0 / (1.0 + 0.327_591_1 * a);
+    let y = 1.0
+        - t * (0.254_829_6 + t * (-0.284_496_74 + t * (1.421_413_7 + t * (-1.453_152_1 + t * 1.061_405_4))))
+            * exp_fast(-a * a);
+    y.copysign(x)
+}
+
+/// Exact (erf) GELU, as Whisper uses (torch.nn.GELU default).
 fn gelu(x: &mut [f32]) {
     x.par_chunks_mut(4096).for_each(|c| {
         for v in c {
-            *v = 0.5 * *v * (1.0 + libm::erff(*v * std::f32::consts::FRAC_1_SQRT_2));
+            *v = 0.5 * *v * (1.0 + erf_fast(*v * std::f32::consts::FRAC_1_SQRT_2));
         }
     });
 }
@@ -161,9 +224,7 @@ fn softmax_row(r: &mut [f32]) {
 
 struct EncLayer {
     ln1: LayerNorm,
-    q: Linear,
-    k: Linear,
-    v: Linear,
+    qkv: Linear, // q, k, v projections stacked into one [3d, d] matrix
     o: Linear,
     ln2: LayerNorm,
     fc1: Linear,
@@ -198,7 +259,8 @@ pub struct Whisper {
     dec_pos: Vec<f32>,
     dec: Vec<DecLayer>,
     dec_ln: LayerNorm,
-    logits_w: PackedB,
+    logits_w: Linear,
+    pub decoder_on_gpu: bool,
 }
 
 pub struct DecState {
@@ -221,9 +283,7 @@ impl Whisper {
             let p = format!("{e}.layers.{i}");
             enc.push(EncLayer {
                 ln1: LayerNorm::load(&st, &format!("{p}.self_attn_layer_norm"))?,
-                q: Linear::load(&st, &format!("{p}.self_attn.q_proj"), true, gpu)?,
-                k: Linear::load(&st, &format!("{p}.self_attn.k_proj"), false, gpu)?,
-                v: Linear::load(&st, &format!("{p}.self_attn.v_proj"), true, gpu)?,
+                qkv: Linear::load_qkv(&st, &format!("{p}.self_attn"), gpu)?,
                 o: Linear::load(&st, &format!("{p}.self_attn.out_proj"), true, gpu)?,
                 ln2: LayerNorm::load(&st, &format!("{p}.final_layer_norm"))?,
                 fc1: Linear::load(&st, &format!("{p}.fc1"), true, gpu)?,
@@ -231,32 +291,38 @@ impl Whisper {
             });
         }
         let dname = "model.decoder";
+        // The decoder runs one token at a time (matrix-vector work). By default it stays on
+        // the CPU path; RIG_DECODER_ON_GPU=1 puts its matrices on the GPU too (Omega backend).
+        let dgpu = gpu && std::env::var("RIG_DECODER_ON_GPU").as_deref() == Ok("1");
         let mut dec = Vec::new();
         for i in 0..cfg.dec_layers {
             let p = format!("{dname}.layers.{i}");
-            // The decoder runs one token at a time (matrix-vector work), so it stays on
-            // the CPU path in both backends.
             dec.push(DecLayer {
                 ln1: LayerNorm::load(&st, &format!("{p}.self_attn_layer_norm"))?,
-                q: Linear::load(&st, &format!("{p}.self_attn.q_proj"), true, false)?,
-                k: Linear::load(&st, &format!("{p}.self_attn.k_proj"), false, false)?,
-                v: Linear::load(&st, &format!("{p}.self_attn.v_proj"), true, false)?,
-                o: Linear::load(&st, &format!("{p}.self_attn.out_proj"), true, false)?,
+                q: Linear::load(&st, &format!("{p}.self_attn.q_proj"), true, dgpu)?,
+                k: Linear::load(&st, &format!("{p}.self_attn.k_proj"), false, dgpu)?,
+                v: Linear::load(&st, &format!("{p}.self_attn.v_proj"), true, dgpu)?,
+                o: Linear::load(&st, &format!("{p}.self_attn.out_proj"), true, dgpu)?,
                 ln2: LayerNorm::load(&st, &format!("{p}.encoder_attn_layer_norm"))?,
-                cq: Linear::load(&st, &format!("{p}.encoder_attn.q_proj"), true, false)?,
+                cq: Linear::load(&st, &format!("{p}.encoder_attn.q_proj"), true, dgpu)?,
+                // cross-attention keys/values: 1500 rows once per window, worth the GPU
                 ck: Linear::load(&st, &format!("{p}.encoder_attn.k_proj"), false, gpu)?,
                 cv: Linear::load(&st, &format!("{p}.encoder_attn.v_proj"), true, gpu)?,
-                co: Linear::load(&st, &format!("{p}.encoder_attn.out_proj"), true, false)?,
+                co: Linear::load(&st, &format!("{p}.encoder_attn.out_proj"), true, dgpu)?,
                 ln3: LayerNorm::load(&st, &format!("{p}.final_layer_norm"))?,
-                fc1: Linear::load(&st, &format!("{p}.fc1"), true, false)?,
-                fc2: Linear::load(&st, &format!("{p}.fc2"), true, false)?,
+                fc1: Linear::load(&st, &format!("{p}.fc1"), true, dgpu)?,
+                fc2: Linear::load(&st, &format!("{p}.fc2"), true, dgpu)?,
             });
         }
         let (embed, es) = st.f32(&format!("{dname}.embed_tokens.weight"))?;
         if es != [cfg.vocab, cfg.d] {
             return Err(format!("embed_tokens shape {es:?}"));
         }
-        let logits_w = PackedB::from_rows(&embed, cfg.vocab, cfg.d);
+        let logits_w = if dgpu {
+            Linear { n: cfg.vocab, k: cfg.d, cpu: None, gpu: Some(Resident::upload_rows(&embed, cfg.vocab, cfg.d)?), bias: None }
+        } else {
+            Linear { n: cfg.vocab, k: cfg.d, cpu: Some(PackedB::from_rows(&embed, cfg.vocab, cfg.d)), gpu: None, bias: None }
+        };
         Ok(Self {
             conv1: Linear::load(&st, &format!("{e}.conv1"), true, gpu)?,
             conv2: Linear::load(&st, &format!("{e}.conv2"), true, gpu)?,
@@ -268,6 +334,7 @@ impl Whisper {
             dec,
             dec_ln: LayerNorm::load(&st, &format!("{dname}.layer_norm"))?,
             logits_w,
+            decoder_on_gpu: dgpu,
             cfg,
             backend,
         })
@@ -317,10 +384,18 @@ impl Whisper {
         for l in &self.enc {
             let h = l.ln1.apply(&x);
             let tm = Instant::now();
-            let q = l.q.forward(&h, t_out);
-            let k = l.k.forward(&h, t_out);
-            let v = l.v.forward(&h, t_out);
+            let qkv = l.qkv.forward(&h, t_out);
             mm += tm.elapsed().as_secs_f64();
+            let (mut q, mut k, mut v) = (vec![0f32; t_out * d], vec![0f32; t_out * d], vec![0f32; t_out * d]);
+            q.par_chunks_mut(d)
+                .zip(k.par_chunks_mut(d))
+                .zip(v.par_chunks_mut(d))
+                .zip(qkv.par_chunks(3 * d))
+                .for_each(|(((qr, kr), vr), src)| {
+                    qr.copy_from_slice(&src[..d]);
+                    kr.copy_from_slice(&src[d..2 * d]);
+                    vr.copy_from_slice(&src[2 * d..]);
+                });
             let ta = Instant::now();
             let a = if self.backend == Backend::Omega {
                 crate::omega::attention_full(&q, &k, &v, t_out, t_out, c.enc_heads, d / c.enc_heads).unwrap_or_else(|e| panic!("{e}"))
@@ -396,9 +471,7 @@ impl Whisper {
 
     /// Logits [vocab] for one hidden row.
     pub fn logits(&self, h: &[f32]) -> Vec<f32> {
-        let mut out = vec![0f32; self.cfg.vocab];
-        matmul(h, 1, &self.logits_w, &mut out);
-        out
+        self.logits_w.forward(h, 1)
     }
 }
 
@@ -464,4 +537,20 @@ fn attention_small(q: &[f32], tq: usize, kc: &[f32], vc: &[f32], tk: usize, head
         }
     });
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn fast_erf_matches_libm() {
+        let mut worst = 0f32;
+        let mut x = -8.0f32;
+        while x <= 8.0 {
+            worst = worst.max((erf_fast(x) - libm::erff(x)).abs());
+            x += 0.001;
+        }
+        // A&S 7.1.26 is 1.5e-7 in exact arithmetic; f32 rounding brings it to about 1.3e-6.
+        assert!(worst < 2e-6, "worst abs error {worst}");
+    }
 }

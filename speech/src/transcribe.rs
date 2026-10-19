@@ -175,6 +175,8 @@ struct WindowResult {
     tokens: Vec<u32>, // without EOT
     avg_logprob: f32,
     no_speech_prob: f32,
+    compression_ratio: f32,
+    temperature: f32,
 }
 
 fn detect_language(model: &Whisper, enc: &[f32], sp: &Specials) -> String {
@@ -185,7 +187,48 @@ fn detect_language(model: &Whisper, enc: &[f32], sp: &Specials) -> String {
     best.1.clone()
 }
 
-fn decode_window(model: &Whisper, enc: &[f32], sp: &Specials, lang_tok: u32, timing: &mut Timing) -> WindowResult {
+/// gzip compression ratio of the text, as whisper uses to spot repetition loops.
+pub fn compression_ratio(text: &str) -> f32 {
+    use std::io::Write;
+    if text.is_empty() {
+        return 0.0;
+    }
+    let mut e = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+    e.write_all(text.as_bytes()).unwrap();
+    let z = e.finish().unwrap();
+    text.len() as f32 / z.len() as f32
+}
+
+/// Small deterministic generator for temperature sampling (xorshift64*).
+struct Rng(u64);
+impl Rng {
+    fn next_f32(&mut self) -> f32 {
+        self.0 ^= self.0 >> 12;
+        self.0 ^= self.0 << 25;
+        self.0 ^= self.0 >> 27;
+        ((self.0.wrapping_mul(0x2545F4914F6CDD1D) >> 40) as f32) / (1u64 << 24) as f32
+    }
+}
+
+fn sample(logits: &[f32], temperature: f32, rng: &mut Rng) -> usize {
+    if temperature <= 0.0 {
+        return argmax(logits);
+    }
+    let m = logits.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
+    let p: Vec<f64> = logits.iter().map(|&v| (((v - m) / temperature) as f64).exp()).collect();
+    let total: f64 = p.iter().sum();
+    let mut r = rng.next_f32() as f64 * total;
+    for (i, &pi) in p.iter().enumerate() {
+        r -= pi;
+        if r <= 0.0 && pi > 0.0 {
+            return i;
+        }
+    }
+    argmax(logits)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn decode_window(model: &Whisper, tok: &Tokenizer, enc: &[f32], sp: &Specials, lang_tok: u32, temperature: f32, rng: &mut Rng, timing: &mut Timing) -> WindowResult {
     let t0 = Instant::now();
     let d = model.cfg.d;
     let mut st = model.new_state(enc);
@@ -202,15 +245,13 @@ fn decode_window(model: &Whisper, enc: &[f32], sp: &Specials, lang_tok: u32, tim
     let sample_len = model.cfg.n_text_ctx / 2;
     let mut tokens: Vec<u32> = Vec::new();
     let mut sum_lp = 0f64;
-    let mut ended = false;
     for _ in 0..sample_len {
         apply_filters(&mut logits, &tokens, sp);
-        let next = argmax(&logits) as u32;
+        let next = sample(&logits, temperature, rng) as u32;
         let lp = log_softmax(&logits)[next as usize];
         sum_lp += lp as f64;
         timing.decoder_tokens += 1;
         if next == sp.eot {
-            ended = true;
             break;
         }
         tokens.push(next);
@@ -220,9 +261,29 @@ fn decode_window(model: &Whisper, enc: &[f32], sp: &Specials, lang_tok: u32, tim
         let h = model.decode(&mut st, &[next]);
         logits = model.logits(&h);
     }
-    let _ = ended;
     timing.decoder_s += t0.elapsed().as_secs_f64();
-    WindowResult { avg_logprob: (sum_lp / (tokens.len() + 1) as f64) as f32, tokens, no_speech_prob }
+    let text_ids: Vec<u32> = tokens.iter().cloned().filter(|&t| t < sp.eot).collect();
+    let compression_ratio = compression_ratio(&tok.decode(&text_ids));
+    WindowResult { avg_logprob: (sum_lp / (tokens.len() + 1) as f64) as f32, tokens, no_speech_prob, compression_ratio, temperature }
+}
+
+/// Whisper's fallback: decode at temperature 0; if the text looks like a repetition loop
+/// (gzip ratio above 2.4) or the model is unsure (average log-probability below -1), retry
+/// with sampling at 0.2, 0.4, ... 1.0. A window the model calls silence is not retried.
+fn decode_with_fallback(model: &Whisper, tok: &Tokenizer, enc: &[f32], sp: &Specials, lang_tok: u32, opts: &Options, rng: &mut Rng, timing: &mut Timing) -> WindowResult {
+    let mut last = None;
+    for &t in &[0.0f32, 0.2, 0.4, 0.6, 0.8, 1.0] {
+        let r = decode_window(model, tok, enc, sp, lang_tok, t, rng, timing);
+        let too_repetitive = r.compression_ratio > 2.4;
+        let too_unsure = r.avg_logprob < opts.logprob_threshold;
+        let silent = r.no_speech_prob > opts.no_speech_threshold;
+        if silent || (!too_repetitive && !too_unsure) {
+            return r;
+        }
+        timing.fallbacks += 1; // this attempt is retried at the next temperature
+        last = Some(r);
+    }
+    last.unwrap()
 }
 
 pub fn transcribe(model: &Whisper, tok: &Tokenizer, sp: &Specials, mel_all: &[f32], frames: usize, opts: &Options) -> Transcript {
@@ -232,6 +293,7 @@ pub fn transcribe(model: &Whisper, tok: &Tokenizer, sp: &Specials, mel_all: &[f3
     let mut segments = Vec::new();
     let mut language = opts.language.clone();
     let mut seek = 0usize;
+    let mut rng = Rng(0x9E3779B97F4A7C15);
     let ts = |t: u32| (t - sp.ts_begin) as f64;
     while seek < content_frames {
         let segment_size = N_FRAMES.min(content_frames - seek);
@@ -252,7 +314,10 @@ pub fn transcribe(model: &Whisper, tok: &Tokenizer, sp: &Specials, mel_all: &[f3
             }
         };
         let lang_tok = sp.language_token(&lang).unwrap_or_else(|| sp.language_token("en").unwrap());
-        let r = decode_window(model, &enc, sp, lang_tok, &mut timing);
+        let r = decode_with_fallback(model, tok, &enc, sp, lang_tok, opts, &mut rng, &mut timing);
+        if opts.verbose && r.temperature > 0.0 {
+            eprintln!("[{time_offset:.2}] fell back to temperature {:.1} (gzip ratio {:.2}, avg logprob {:.2})", r.temperature, r.compression_ratio, r.avg_logprob);
+        }
         if r.no_speech_prob > opts.no_speech_threshold && r.avg_logprob < opts.logprob_threshold {
             if opts.verbose {
                 eprintln!("[{time_offset:.2}] no speech (p={:.2}), skipping {segment_duration:.1} s", r.no_speech_prob);
@@ -346,6 +411,14 @@ mod tests {
             begin_suppress: vec![220, 50257],
             max_initial_ts_index: 50,
         }
+    }
+
+    #[test]
+    fn repetition_has_a_high_gzip_ratio() {
+        let normal = "He hoped there would be stew for dinner, turnips and carrots and bruised potatoes.";
+        let looped = "Thank you. ".repeat(40);
+        assert!(compression_ratio(normal) < 2.4);
+        assert!(compression_ratio(&looped) > 2.4);
     }
 
     #[test]

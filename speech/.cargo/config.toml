@@ -1,0 +1,10 @@
+# x86-64 PCs (the RTX 5070 rig): build for AVX2 + FMA (x86-64-v3: Intel Haswell 2013+, AMD Zen).
+# Without it the CPU matrix multiply falls back to SSE2 and runs several times slower.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-cpu=x86-64-v3"]
+
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "target-cpu=x86-64-v3"]
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-cpu=x86-64-v3"]

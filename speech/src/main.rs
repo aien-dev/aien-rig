@@ -262,6 +262,7 @@ fn main() {
             "git_sha": option_env!("RIG_GIT_SHA").unwrap_or("unknown"),
             "machine": machine.unwrap_or_else(|| "unlabelled".into()),
             "backend": format!("{backend:?}").to_lowercase(),
+            "decoder_on_gpu": m.decoder_on_gpu,
             "omega_gpu_lib": option_env!("RIG_OMEGA_GPU_LIB"),
             "threads": rayon::current_num_threads(),
             "load_average_at_end": std::fs::read_to_string("/proc/loadavg").ok().map(|s| s.trim().to_string()),
@@ -282,11 +283,13 @@ fn main() {
                 "encoder": tm.encoder_s,
                 "encoder_matmul": tm.encoder_matmul_s,
                 "encoder_attention": tm.encoder_attention_s,
+                "encoder_other_cpu_ops": tm.encoder_s - tm.encoder_matmul_s - tm.encoder_attention_s,
                 "decoder": tm.decoder_s,
                 "total_including_load": total_s
             },
             "windows": tm.windows,
             "decoder_steps": tm.decoder_tokens,
+            "temperature_fallbacks": tm.fallbacks,
             "realtime_factor_excluding_load": audio_s / process_s,
             "transcript": out.display().to_string()
         });
