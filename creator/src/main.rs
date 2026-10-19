@@ -29,6 +29,7 @@ OPTIONS
   --short-max <seconds>   Longest Shorts clip (default 60)
   --format <name>         Force the input format: srt, vtt, json3, json, timed-text, text
   --timeout <seconds>     Longest wait for one model answer (default 900)
+  --busy-wait <seconds>   How long to keep retrying while the server is busy (default 900)
   -h, --help              Show this help
   -V, --version           Show the version
 ";
@@ -80,6 +81,7 @@ fn real_main() -> Result<(), (u8, String)> {
             "--short-min" => job.options.clips.min_secs = num(&value()?, a)?,
             "--short-max" => job.options.clips.max_secs = num(&value()?, a)?,
             "--timeout" => job.request_timeout = Duration::from_secs(num(&value()?, a)?),
+            "--busy-wait" => job.busy_wait = Duration::from_secs(num(&value()?, a)?),
             "--format" => {
                 let v = value()?;
                 job.format = Some(Format::from_name(&v).ok_or_else(|| usage(format!("unknown format {v}")))?);

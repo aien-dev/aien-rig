@@ -47,6 +47,8 @@ pub struct Job {
     pub captions_only: bool,
     /// Longest wait for one model reply.
     pub request_timeout: Duration,
+    /// Longest total time to keep retrying one request while the server says it is busy.
+    pub busy_wait: Duration,
 }
 
 impl Job {
@@ -61,6 +63,7 @@ impl Job {
             options: Options::default(),
             captions_only: false,
             request_timeout: Duration::from_secs(900),
+            busy_wait: Duration::from_secs(900),
         }
     }
 }
@@ -94,7 +97,9 @@ pub fn run(job: &Job, progress: &mut dyn FnMut(&str)) -> Result<Outcome> {
         None
     } else {
         progress(&format!("Connecting to the model server at {}", llm::normalize_base(&job.server)));
-        let model = HttpModel::connect(&job.server, job.model.as_deref(), job.api_key.as_deref(), job.request_timeout)?;
+        let mut model =
+            HttpModel::connect(&job.server, job.model.as_deref(), job.api_key.as_deref(), job.request_timeout)?;
+        model.max_busy_wait = job.busy_wait;
         Some(pipeline::create(&tr, &model, &job.options, progress)?)
     };
     let out_dir = job.out_dir.clone().unwrap_or_else(|| default_out_dir(&job.input));
