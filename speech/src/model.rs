@@ -291,9 +291,10 @@ impl Whisper {
             });
         }
         let dname = "model.decoder";
-        // The decoder runs one token at a time (matrix-vector work). By default it stays on
-        // the CPU path; RIG_DECODER_ON_GPU=1 puts its matrices on the GPU too (Omega backend).
-        let dgpu = gpu && std::env::var("RIG_DECODER_ON_GPU").as_deref() == Ok("1");
+        // The decoder runs one token at a time (matrix-vector work). On the Omega backend its
+        // matrices go to the GPU too (GB10: 18 ms per token against 30 ms on the busy CPU,
+        // evidence/speech); RIG_DECODER_ON_GPU=0 keeps them on the CPU.
+        let dgpu = gpu && std::env::var("RIG_DECODER_ON_GPU").as_deref() != Ok("0");
         let mut dec = Vec::new();
         for i in 0..cfg.dec_layers {
             let p = format!("{dname}.layers.{i}");
