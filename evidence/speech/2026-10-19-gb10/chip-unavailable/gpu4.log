@@ -1,0 +1,15 @@
+lock acquired 2026-10-19T19:27:51Z load 11.37 11.82 19.39 5/2026 3530055
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+selftest rc=2
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+tiny rc=2
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+1089-134686 rc=2
+rig-listen: turbo-omega-1089-134686.json: No such file or directory (os error 2)
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+1188-133604 rc=2
+rig-listen: turbo-omega-1188-133604.json: No such file or directory (os error 2)
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+2961-960 rc=2
+rig-listen: turbo-omega-2961-960.json: No such file or directory (os error 2)
+done 2026-10-19T19:27:51Z

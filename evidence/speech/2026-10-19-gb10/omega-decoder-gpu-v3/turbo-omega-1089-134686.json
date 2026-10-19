@@ -1,0 +1,360 @@
+{
+  "schema": "aien-rig-transcript/1",
+  "language": "en",
+  "duration": 276.245,
+  "source": "1089-134686.mp4",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 10.06,
+      "text": "He hoped there would be stew for dinner, turnips and carrots and bruised potatoes, and fat mutton pieces to be ladled out in thick, peppered, flour-fattened sauce.",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 1,
+      "start": 10.86,
+      "end": 13.24,
+      "text": "Stuff it into you, his belly counseled him.",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 2,
+      "start": 14.12,
+      "end": 19.8,
+      "text": "After early nightfall the yellow lamps would light up here and there the squalid quarter of the brothels.",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 3,
+      "start": 20.7,
+      "end": 22.72,
+      "text": "Hello, Bertie. Any good in your mind?",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 4,
+      "start": 23.28,
+      "end": 26.38,
+      "text": "Number ten. Fresh Nelly is waiting on you.",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 5,
+      "start": 26.72,
+      "end": 27.92,
+      "text": "Good night, husband.",
+      "avg_logprob": -0.166,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 6,
+      "start": 27.92,
+      "end": 34.3,
+      "text": "the music came nearer, and he recalled the words, the words of Shelley's fragment upon the moon",
+      "avg_logprob": -0.099,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 7,
+      "start": 34.3,
+      "end": 41.22,
+      "text": "wandering companionless, pale for weariness. The dull light fell more faintly upon the page,",
+      "avg_logprob": -0.099,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 8,
+      "start": 41.32,
+      "end": 47.86,
+      "text": "whereon another equation began to unfold itself slowly, and to spread abroad its widening tale.",
+      "avg_logprob": -0.099,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 9,
+      "start": 48.92,
+      "end": 56.08,
+      "text": "A cold, lucid indifference reigned in his soul. The chaos in which his ardor extinguished itself",
+      "avg_logprob": -0.099,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 10,
+      "start": 56.08,
+      "end": 63.0,
+      "text": "was a cold, indifferent knowledge of himself. At most, by an alms given to a beggar whose",
+      "avg_logprob": -0.077,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 11,
+      "start": 63.0,
+      "end": 69.38,
+      "text": "blessing he fled from, he might hope wearily to win for himself some measure of actual grace.",
+      "avg_logprob": -0.077,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 12,
+      "start": 70.2,
+      "end": 74.18,
+      "text": "Well now, Ennis, I declare you have a head, and so has my stick.",
+      "avg_logprob": -0.077,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 13,
+      "start": 74.9,
+      "end": 79.42,
+      "text": "On Saturday mornings, when the sodality met in the chapel to recite the little office,",
+      "avg_logprob": -0.077,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 14,
+      "start": 79.88,
+      "end": 84.76,
+      "text": "his place was a cushioned kneeling-desk at the right of the altar from which he led his wing",
+      "avg_logprob": -0.077,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 15,
+      "start": 84.76,
+      "end": 91.14,
+      "text": "of boys through the responses. Her eyes seemed to regard him with mild pity. Her holiness,",
+      "avg_logprob": -0.053,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 16,
+      "start": 91.68,
+      "end": 97.68,
+      "text": "a strange light glowing faintly upon her frail flesh, did not humiliate the sinner who approached",
+      "avg_logprob": -0.053,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 17,
+      "start": 97.68,
+      "end": 104.42,
+      "text": "her. If ever he was impelled to cast sin from him and to repent, the impulse that moved him",
+      "avg_logprob": -0.053,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 18,
+      "start": 104.42,
+      "end": 110.44,
+      "text": "was the wish to be her night. He tried to think how it could be, but the dusk, deepening in the",
+      "avg_logprob": -0.053,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 19,
+      "start": 110.44,
+      "end": 116.38,
+      "text": "schoolroom covered over his thoughts. The bell rang. Then you can ask him questions on the",
+      "avg_logprob": -0.047,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 20,
+      "start": 116.38,
+      "end": 123.24,
+      "text": "catechism, Daedalus. Stephen, leaning back and drawing idly on his scribbler, listened to the",
+      "avg_logprob": -0.047,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 21,
+      "start": 123.24,
+      "end": 129.58,
+      "text": "talk about him, which Heron checked from time to time by saying, It was strange, too, that he found",
+      "avg_logprob": -0.047,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 22,
+      "start": 129.58,
+      "end": 134.96,
+      "text": "an arid pleasure in following up to the end the rigid lines of the doctrines of the church,",
+      "avg_logprob": -0.047,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 23,
+      "start": 134.96,
+      "end": 141.98,
+      "text": "and penetrating into obscure silences only to hear and feel the more deeply his own condemnation.",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 24,
+      "start": 143.04,
+      "end": 149.06,
+      "text": "The sentence of St. James, which says that he who offends against one commandment becomes guilty of",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 25,
+      "start": 149.06,
+      "end": 155.18,
+      "text": "all, had seemed to him first a swollen phrase, until he had begun to grope in the darkness of",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 26,
+      "start": 155.18,
+      "end": 162.0,
+      "text": "his own state. If a man had stolen a pound in his youth, and had used that pound to amass a huge",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 27,
+      "start": 162.0,
+      "end": 168.6,
+      "text": "fortune, how much was he obliged to give back? The pound he had stolen only, or the pound together",
+      "avg_logprob": -0.046,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 28,
+      "start": 168.6,
+      "end": 174.84,
+      "text": "with the compound interest accruing upon it, or all his huge fortune? If a layman, in giving",
+      "avg_logprob": -0.046,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 29,
+      "start": 174.84,
+      "end": 181.7,
+      "text": "baptism, pour the water before saying the words, is the child baptized? How comes it that while the",
+      "avg_logprob": -0.046,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 30,
+      "start": 181.7,
+      "end": 187.5,
+      "text": "first beatitude promises the kingdom of heaven to the poor of heart, the second beatitude promises",
+      "avg_logprob": -0.046,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 31,
+      "start": 187.5,
+      "end": 193.36,
+      "text": "also to the meek that they shall possess the land? Why was the sacrament of the Eucharist",
+      "avg_logprob": -0.071,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 32,
+      "start": 193.36,
+      "end": 199.58,
+      "text": "instituted under the two species of bread and wine, if Jesus Christ be present body and blood,",
+      "avg_logprob": -0.071,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 33,
+      "start": 200.06,
+      "end": 206.2,
+      "text": "soul and divinity, in the bread alone and in the wine alone? If the wine change into vinegar,",
+      "avg_logprob": -0.071,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 34,
+      "start": 206.2,
+      "end": 212.24,
+      "text": "and the host crumble into corruption after they have been consecrated, is Jesus Christ still",
+      "avg_logprob": -0.071,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 35,
+      "start": 212.24,
+      "end": 219.12,
+      "text": "present under their species as God and as man? A gentle kick from the tall boy in the bench behind",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 36,
+      "start": 219.12,
+      "end": 225.66,
+      "text": "urged Stephen to ask a difficult question. The rector did not ask for a catechism to hear the",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 37,
+      "start": 225.66,
+      "end": 232.3,
+      "text": "lesson from. He clasped his hands on the desk and said, The retreat will begin on Wednesday afternoon",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 38,
+      "start": 232.3,
+      "end": 239.6,
+      "text": "in honor of St. Francis Xavier, whose feast day is Saturday. On Friday, confession will be heard",
+      "avg_logprob": -0.044,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 39,
+      "start": 239.6,
+      "end": 247.22,
+      "text": "all the afternoon after beads. Beware of making that mistake! Stephen's heart began slowly to",
+      "avg_logprob": -0.094,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 40,
+      "start": 247.22,
+      "end": 254.34,
+      "text": "fold and fade with fear like a withering flower. He is called, as you know, the Apostle of the",
+      "avg_logprob": -0.094,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 41,
+      "start": 254.34,
+      "end": 262.12,
+      "text": "Indies, a great saint, St. Francis Xavier. The rector paused, and then, shaking his clasped",
+      "avg_logprob": -0.094,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 42,
+      "start": 262.12,
+      "end": 269.0,
+      "text": "hands before him, went on. He had the faith in him that moves mountains, a great saint,",
+      "avg_logprob": -0.094,
+      "no_speech_prob": 0.0
+    },
+    {
+      "id": 43,
+      "start": 269.0,
+      "end": 275.9,
+      "text": "St. Francis Xavier. In the silence, their dark fire kindled the dusk into a tawny glow.",
+      "avg_logprob": -0.1,
+      "no_speech_prob": 0.0
+    }
+  ]
+}

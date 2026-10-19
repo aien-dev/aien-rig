@@ -1,0 +1,8 @@
+queued 2026-10-19T17:39:44Z
+lock acquired 2026-10-19T17:45:07Z load 75.89 70.80 75.20 78/2550 1338296
+selftest rc=0
+1089-134686 rc=0
+1188-133604 rc=0
+rig-listen: omega gpu matmul rc -4 (CHIP_FAIL): m16_native_create_channel: RM_ALLOC class 0xcec0 status 0x51
+2961-960 rc=2
+done 2026-10-19T17:49:30Z

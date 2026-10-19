@@ -1,0 +1,79 @@
+{
+  "tool": "rig-listen gpu-selftest",
+  "git_sha": "19af927e9dd2",
+  "omega_gpu_lib": "/home/drakestapleton/workspace/hive-worktrees/omega-rig-speech/build/libomega_gpu.a",
+  "threads": 20,
+  "load_average_at_end": "75.89 70.80 75.20 61/2577 1339160",
+  "results": [
+    {
+      "op": "matmul",
+      "m": 1500,
+      "k": 1280,
+      "n": 1280,
+      "max_abs_err": 5.9604644775390625e-6,
+      "max_err_over_max_ref": 1.8991304386872798e-6,
+      "cpu_s": 0.078091938,
+      "gpu_s": 0.0062756138000000005,
+      "cpu_gflops": 62.94119631145534,
+      "gpu_gflops": 783.2221925447355
+    },
+    {
+      "op": "matmul",
+      "m": 1500,
+      "k": 1280,
+      "n": 5120,
+      "max_abs_err": 7.3909759521484375e-6,
+      "max_err_over_max_ref": 2.358474148422829e-6,
+      "cpu_s": 0.16920565,
+      "gpu_s": 0.018388439200000002,
+      "cpu_gflops": 116.19470153626665,
+      "gpu_gflops": 1069.1935180665032
+    },
+    {
+      "op": "matmul",
+      "m": 1500,
+      "k": 5120,
+      "n": 1280,
+      "max_abs_err": 0.000047206878662109375,
+      "max_err_over_max_ref": 7.185817594290711e-6,
+      "cpu_s": 0.226137217,
+      "gpu_s": 0.0152076466,
+      "cpu_gflops": 86.94190306587171,
+      "gpu_gflops": 1292.8233090319181
+    },
+    {
+      "op": "matmul",
+      "m": 3000,
+      "k": 384,
+      "n": 1280,
+      "max_abs_err": 1.430511474609375e-6,
+      "max_err_over_max_ref": 8.228977890212263e-7,
+      "cpu_s": 0.02817143,
+      "gpu_s": 0.004295854,
+      "cpu_gflops": 104.68478170969667,
+      "gpu_gflops": 686.5037778285762
+    },
+    {
+      "op": "attention_full",
+      "rows": 1500,
+      "kv_len": 1500,
+      "heads": 20,
+      "head_dim": 64,
+      "max_abs_err": 2.1606683731079102e-7,
+      "max_err_over_max_ref": 3.470964202278992e-6,
+      "cpu_s": 0.233933862,
+      "gpu_s": 0.118967477
+    },
+    {
+      "op": "attention_full",
+      "rows": 1500,
+      "kv_len": 1500,
+      "heads": 6,
+      "head_dim": 64,
+      "max_abs_err": 2.0116567611694336e-7,
+      "max_err_over_max_ref": 3.0339260774780996e-6,
+      "cpu_s": 0.056365164,
+      "gpu_s": 0.015711899
+    }
+  ]
+}
