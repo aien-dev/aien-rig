@@ -1,0 +1,106 @@
+name: release
+
+# Builds every Windows program on windows-latest for each push and pull
+# request (so breakage shows up early), and on a v* tag also publishes
+# aien-rig-windows-x64.zip to GitHub Releases. The desk pushes tags after
+# merging; this workflow never creates tags itself.
+
+on:
+  push:
+    tags: ["v*"]
+    branches: [main, "app/**", "tuner/**", "creator/**", "speech/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      CARGO_TERM_COLOR: always
+      TARGET: x86_64-pc-windows-msvc
+      IS_TAG: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --target $env:TARGET
+          rustup default stable
+          rustc --version
+          cargo --version
+
+      - name: Workspace members present on this commit
+        run: python tools/workspace_sync.py --write --report build-plan.json
+
+      - name: Build workspace
+        run: cargo build --release --workspace --target $env:TARGET
+
+      - name: Build standalone crates
+        run: |
+          $plan = Get-Content build-plan.json -Raw | ConvertFrom-Json
+          foreach ($c in $plan.standalone) {
+            cargo build --release --manifest-path "$c/Cargo.toml" --target $env:TARGET --target-dir target
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+      - name: Test
+        run: cargo test --workspace --target $env:TARGET
+
+      - name: Smoke test aien-rig.exe
+        run: |
+          $env:AIEN_RIG_HOME = "$env:RUNNER_TEMP\aien-rig-home"
+          $p = Start-Process -FilePath "target\$env:TARGET\release\aien-rig.exe" -ArgumentList "--no-browser","--port","18120" -PassThru
+          try {
+            $ok = $false
+            for ($i = 0; $i -lt 20 -and -not $ok; $i++) {
+              Start-Sleep -Milliseconds 500
+              try { $s = Invoke-RestMethod -Uri "http://127.0.0.1:18120/api/status" -TimeoutSec 5; $ok = [bool]$s.ok } catch { }
+            }
+            if (-not $ok) { throw "aien-rig.exe did not answer /api/status" }
+            $page = Invoke-WebRequest -Uri "http://127.0.0.1:18120/" -UseBasicParsing -TimeoutSec 5
+            if ($page.Content -notmatch "AIEN") { throw "page did not load" }
+            $s | ConvertTo-Json -Depth 5
+          } finally {
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Package
+        run: |
+          $version = if ($env:IS_TAG -eq "true") { "${{ github.ref_name }}" } else { "dev-$("${{ github.sha }}".Substring(0,7))" }
+          $pkgArgs = @("tools/package.py", "--bin-dir", "target/$env:TARGET/release", "--out", "dist", "--version", $version, "--commit", "${{ github.sha }}")
+          if ($env:IS_TAG -eq "true") { $pkgArgs += "--require-all" }
+          python @pkgArgs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aien-rig-windows-x64
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release view $tag -R "${{ github.repository }}" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag dist/aien-rig-windows-x64.zip dist/aien-rig-windows-x64.zip.sha256 --clobber -R "${{ github.repository }}"
+          } else {
+            gh release create $tag dist/aien-rig-windows-x64.zip dist/aien-rig-windows-x64.zip.sha256 --title "AIEN Rig $tag" --notes-file docs/RELEASE-NOTES.md --verify-tag -R "${{ github.repository }}"
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

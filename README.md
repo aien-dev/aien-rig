@@ -11,3 +11,9 @@ Local AI and a measured FPS tuner for RTX gaming PCs, starting with the RTX 5070
 Status: pre-alpha, under active build. Not tested on an RTX 5070 yet. Every speed claim links to a receipt in evidence/.
 
 License: AGPL-3.0.
+
+## Download (Windows)
+
+https://github.com/aien-dev/aien-rig/releases/latest/download/aien-rig-windows-x64.zip
+
+Extract it and read `README-FIRST.txt`. Built and tested by CI on Windows; not yet run on an RTX 5070.

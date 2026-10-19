@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIEN Rig</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#2a2f3a; --text:#e6e8ee; --dim:#9aa3b2; --accent:#76b900; --bad:#ff6b6b; --warn:#f5c04a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.45 "Segoe UI", system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  header { display:flex; align-items:center; gap:18px; padding:12px 20px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0; letter-spacing:.5px; }
+  header h1 span { color:var(--accent); }
+  nav button { background:none; border:none; color:var(--dim); font:inherit; padding:8px 14px; border-radius:6px; cursor:pointer; }
+  nav button.on { color:var(--text); background:var(--panel); }
+  #state { margin-left:auto; color:var(--dim); font-size:13px; }
+  main { padding:20px; max-width:1100px; margin:0 auto; }
+  section { display:none; } section.on { display:block; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .card h2 { font-size:15px; margin:0 0 10px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  button.act { background:var(--accent); color:#0b0d10; border:none; font-weight:600; padding:8px 14px; border-radius:6px; cursor:pointer; }
+  button.act.alt { background:#2c3340; color:var(--text); }
+  button.act:disabled { opacity:.5; cursor:wait; }
+  input[type=text], textarea, select { background:#0c0e12; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:8px; font:inherit; }
+  input[type=text] { min-width:320px; flex:1; }
+  textarea { width:100%; min-height:90px; }
+  pre { background:#0c0e12; border:1px solid var(--line); border-radius:6px; padding:10px; overflow:auto; max-height:360px; white-space:pre-wrap; word-break:break-word; font:12.5px/1.4 Consolas, monospace; }
+  .dim { color:var(--dim); } .bad { color:var(--bad); } .ok { color:var(--accent); } .warn { color:var(--warn); }
+  ul.plain { list-style:none; padding:0; margin:0; } ul.plain li { padding:6px 0; border-bottom:1px solid var(--line); }
+  ul.plain li a { color:var(--text); cursor:pointer; text-decoration:underline; text-decoration-color:var(--line); }
+  #chatlog { min-height:240px; max-height:480px; overflow:auto; }
+  .msg { margin:8px 0; padding:10px 12px; border-radius:8px; white-space:pre-wrap; }
+  .msg.user { background:#22303f; margin-left:15%; } .msg.bot { background:#1d2419; margin-right:15%; }
+  .copy { font-size:12px; padding:3px 8px; }
+  table { border-collapse:collapse; width:100%; } td, th { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+</style>
+</head>
+<body>
+<header>
+  <h1>AIEN <span>Rig</span></h1>
+  <nav>
+    <button data-tab="play" class="on">Play</button>
+    <button data-tab="create">Create</button>
+    <button data-tab="chat">Chat</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+  <div id="state">starting...</div>
+</header>
+<main>
+
+<section id="play" class="on">
+  <div class="card">
+    <h2>FPS tuner</h2>
+    <p class="dim">Scan finds your games. Measure records how a game runs now. Apply makes only safe changes and keeps a receipt. Undo puts everything back.</p>
+    <div class="row">
+      <button class="act" data-tune="scan">Scan</button>
+      <select id="game"><option value="">(run Scan, or type a game below)</option></select>
+      <input type="text" id="gameText" placeholder="game name or program, e.g. cs2" style="min-width:200px">
+      <button class="act alt" data-tune="measure">Measure</button>
+      <button class="act alt" data-tune="apply">Apply</button>
+      <button class="act alt" data-tune="undo">Undo everything</button>
+    </div>
+    <p id="tuneMsg" class="dim"></p>
+    <pre id="tuneOut" hidden></pre>
+  </div>
+  <div class="card">
+    <h2>Game mode</h2>
+    <p class="dim">While one of the listed games runs, AIEN Rig pauses the AI engine (so the game gets all 12 GB of graphics memory) and makes sure Windows Game Mode is on. It puts both back when the game closes.</p>
+    <p id="gameState"></p>
+    <ul class="plain" id="events"></ul>
+  </div>
+  <div class="card">
+    <h2>Receipts</h2>
+    <p class="dim" id="receiptFolder"></p>
+    <ul class="plain" id="receipts"></ul>
+    <pre id="receiptView" hidden></pre>
+  </div>
+</section>
+
+<section id="create">
+  <div class="card">
+    <h2>YouTube helper</h2>
+    <p class="dim">Pick a finished video or its caption file. You get title ideas, a description, chapters and Shorts picks.</p>
+    <div class="row">
+      <button class="act alt" data-pick="video">Pick a video...</button>
+      <button class="act alt" data-pick="captions">Pick a caption file...</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <input type="text" id="createPath" placeholder="or paste the full path, e.g. C:\Users\you\Videos\clip.mp4">
+      <button class="act" id="createGo">Make it</button>
+    </div>
+    <p id="createMsg" class="dim"></p>
+  </div>
+  <div id="createOut"></div>
+</section>
+
+<section id="chat">
+  <div class="card">
+    <h2>Engine</h2>
+    <div class="row">
+      <span id="engineState" class="dim">checking...</span>
+      <button class="act alt" id="engineStart">Start engine</button>
+      <button class="act alt" id="engineStop">Stop engine</button>
+    </div>
+    <p class="dim">The engine runs inside WSL2 on this PC. Its GPU path for the RTX 5070 is still being built, so chat may not work yet. See README-FIRST.txt.</p>
+  </div>
+  <div class="card">
+    <div id="chatlog"></div>
+    <div class="row" style="margin-top:10px">
+      <input type="text" id="chatInput" placeholder="Ask something...">
+      <button class="act" id="chatSend">Send</button>
+      <button class="act alt" id="chatClear">Clear</button>
+    </div>
+  </div>
+</section>
+
+<section id="settings">
+  <div class="card">
+    <h2>Settings</h2>
+    <p class="dim">Saved in your AIEN Rig data folder. Leave these alone unless someone asked you to change them.</p>
+    <table>
+      <tr><th>Games to watch (one per line)</th><td><textarea id="s_games"></textarea></td></tr>
+      <tr><th>Game mode automatic</th><td><input type="checkbox" id="s_auto"></td></tr>
+      <tr><th>Engine runs</th><td><select id="s_mode"><option value="wsl">inside WSL2</option><option value="command">as a Windows program</option></select></td></tr>
+      <tr><th>WSL distribution (empty = default)</th><td><input type="text" id="s_distro"></td></tr>
+      <tr><th>Engine command</th><td><input type="text" id="s_cmd"></td></tr>
+      <tr><th>Engine address</th><td><input type="text" id="s_url"></td></tr>
+    </table>
+    <div class="row" style="margin-top:10px"><button class="act" id="saveSettings">Save</button><span id="settingsMsg" class="dim"></span></div>
+  </div>
+  <div class="card"><h2>About</h2><pre id="about"></pre></div>
+</section>
+
+</main>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const el = (tag, text, cls) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; };
+
+async function api(path, body) {
+  const opt = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json", "X-AIEN-Rig": "1" }, body: JSON.stringify(body) };
+  const r = await fetch(path, opt);
+  let j = {};
+  try { j = await r.json(); } catch (e) { j = { ok: false, error: "Bad reply (" + r.status + ")" }; }
+  if (!r.ok && j.ok === undefined) j.ok = false;
+  return j;
+}
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("on", s.id === b.dataset.tab));
+  if (b.dataset.tab === "settings") loadSettings();
+});
+
+function busy(btns, on) { btns.forEach(b => b.disabled = on); }
+
+// ---------- Play ----------
+function gamesFrom(result) {
+  if (!result) return [];
+  const list = Array.isArray(result) ? result : (result.games || []);
+  return list.map(g => typeof g === "string" ? { id: g, label: g } : { id: g.id || g.exe || g.name, label: (g.name || g.id || g.exe) + (g.exe ? "  (" + g.exe + ")" : "") }).filter(g => g.id);
+}
+
+document.querySelectorAll("[data-tune]").forEach(b => b.onclick = async () => {
+  const action = b.dataset.tune;
+  const game = $("gameText").value.trim() || $("game").value;
+  if (action === "undo" && !confirm("Undo every change the tuner made?")) return;
+  const all = [...document.querySelectorAll("[data-tune]")];
+  busy(all, true);
+  $("tuneMsg").textContent = "Running " + action + "... (Measure can take a few minutes; keep the game open if it asks.)";
+  $("tuneMsg").className = "dim";
+  const j = await api("/api/tune", { action, game });
+  busy(all, false);
+  if (j.error && j.exit_code === undefined) { $("tuneMsg").textContent = j.error; $("tuneMsg").className = "bad"; $("tuneOut").hidden = true; return; }
+  $("tuneMsg").textContent = (j.ok ? "Done" : "Finished with a problem") + " in " + (j.seconds || 0).toFixed(1) + " s." + (j.receipt ? " Receipt: " + j.receipt : "");
+  $("tuneMsg").className = j.ok ? "ok" : "bad";
+  $("tuneOut").hidden = false;
+  $("tuneOut").textContent = j.result ? JSON.stringify(j.result, null, 2) : ((j.stdout || "") + (j.stderr ? "\n--- messages ---\n" + j.stderr : ""));
+  if (action === "scan") {
+    const games = gamesFrom(j.result);
+    if (games.length) {
+      const sel = $("game"); sel.textContent = "";
+      games.forEach(g => { const o = el("option", g.label); o.value = g.id; sel.appendChild(o); });
+    }
+  }
+  loadReceipts();
+});
+
+async function loadReceipts() {
+  const j = await api("/api/receipts");
+  $("receiptFolder").textContent = j.folder ? "Saved in " + j.folder : "";
+  const ul = $("receipts"); ul.textContent = "";
+  (j.receipts || []).forEach(r => {
+    const li = el("li"); const a = el("a", r.name);
+    a.onclick = async () => { const v = await api("/api/receipt?name=" + encodeURIComponent(r.name)); $("receiptView").hidden = false; $("receiptView").textContent = JSON.stringify(v.receipt || v, null, 2); };
+    li.appendChild(a);
+    if (r.summary && r.summary.exit_code !== undefined) li.appendChild(el("span", "  exit " + r.summary.exit_code, r.summary.exit_code === 0 ? "ok" : "bad"));
+    ul.appendChild(li);
+  });
+  if (!ul.children.length) ul.appendChild(el("li", "No receipts yet.", "dim"));
+}
+
+// ---------- Create ----------
+document.querySelectorAll("[data-pick]").forEach(b => b.onclick = async () => {
+  $("createMsg").textContent = "A file window opened (it may be behind the browser).";
+  const j = await api("/api/pick-file", { kind: b.dataset.pick });
+  if (j.ok) { $("createPath").value = j.path; $("createMsg").textContent = ""; }
+  else $("createMsg").textContent = j.error || "No file picked.";
+});
+
+function copyBtn(text) { const b = el("button", "Copy", "act alt copy"); b.onclick = () => navigator.clipboard.writeText(text).then(() => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1200); }); return b; }
+
+function renderCreate(r) {
+  const out = $("createOut"); out.textContent = "";
+  const add = (title, node) => { const c = el("div", undefined, "card"); c.appendChild(el("h2", title)); c.appendChild(node); out.appendChild(c); };
+  if (Array.isArray(r.titles) && r.titles.length) {
+    const ul = el("ul", undefined, "plain");
+    r.titles.forEach(t => { const li = el("li", String(t) + "  "); li.appendChild(copyBtn(String(t))); ul.appendChild(li); });
+    add("Titles", ul);
+  }
+  if (r.description) { const d = el("div"); const p = el("pre", r.description); d.appendChild(p); d.appendChild(copyBtn(r.description)); add("Description", d); }
+  if (Array.isArray(r.chapters) && r.chapters.length) {
+    const text = r.chapters.map(c => typeof c === "string" ? c : ((c.time || c.start || "") + " " + (c.title || ""))).join("\n");
+    const d = el("div"); d.appendChild(el("pre", text)); d.appendChild(copyBtn(text)); add("Chapters (paste into the description)", d);
+  }
+  if (Array.isArray(r.shorts) && r.shorts.length) {
+    const t = el("table");
+    r.shorts.forEach(s => { const tr = el("tr"); const f = (x) => tr.appendChild(el("td", x === undefined ? "" : String(x)));
+      if (typeof s === "string") f(s); else { f((s.start || "") + " - " + (s.end || "")); f(s.title || ""); f(s.why || s.reason || ""); }
+      t.appendChild(tr); });
+    add("Shorts picks", t);
+  }
+  if (!out.children.length) add("Result", el("pre", JSON.stringify(r, null, 2)));
+}
+
+$("createGo").onclick = async () => {
+  const path = $("createPath").value.trim();
+  busy([$("createGo")], true);
+  $("createMsg").textContent = "Working... long videos take a while."; $("createMsg").className = "dim";
+  const j = await api("/api/create", { path });
+  busy([$("createGo")], false);
+  if (j.error && j.exit_code === undefined) { $("createMsg").textContent = j.error; $("createMsg").className = "bad"; return; }
+  $("createMsg").textContent = (j.ok ? "Done" : "Finished with a problem") + (j.receipt ? ". Receipt: " + j.receipt : "");
+  $("createMsg").className = j.ok ? "ok" : "bad";
+  if (j.result) renderCreate(j.result);
+  else { $("createOut").textContent = ""; const c = el("div", undefined, "card"); c.appendChild(el("pre", (j.stdout || "") + (j.stderr ? "\n--- messages ---\n" + j.stderr : ""))); $("createOut").appendChild(c); }
+  loadReceipts();
+};
+
+// ---------- Chat ----------
+let chat = [];
+function addMsg(role, text) { const m = el("div", text, "msg " + (role === "user" ? "user" : "bot")); $("chatlog").appendChild(m); $("chatlog").scrollTop = 1e9; return m; }
+async function send() {
+  const text = $("chatInput").value.trim(); if (!text) return;
+  $("chatInput").value = ""; chat.push({ role: "user", content: text }); addMsg("user", text);
+  const wait = addMsg("bot", "...");
+  busy([$("chatSend")], true);
+  const j = await api("/api/chat", { messages: chat });
+  busy([$("chatSend")], false);
+  if (j.ok) { wait.textContent = j.reply; chat.push({ role: "assistant", content: j.reply }); }
+  else { wait.textContent = j.error || "No answer."; wait.classList.add("bad"); chat.pop(); }
+}
+$("chatSend").onclick = send;
+$("chatInput").addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+$("chatClear").onclick = () => { chat = []; $("chatlog").textContent = ""; };
+async function engine(action) {
+  busy([$("engineStart"), $("engineStop")], true);
+  $("engineState").textContent = action === "start" ? "starting (can take a minute)..." : "stopping...";
+  const j = await api("/api/engine", { action });
+  busy([$("engineStart"), $("engineStop")], false);
+  $("engineState").textContent = j.ok ? j.message : j.error; $("engineState").className = j.ok ? "ok" : "bad";
+  refresh();
+}
+$("engineStart").onclick = () => engine("start");
+$("engineStop").onclick = () => engine("stop");
+
+// ---------- Settings ----------
+async function loadSettings() {
+  const c = await api("/api/config");
+  $("s_games").value = (c.games || []).join("\n"); $("s_auto").checked = !!c.auto_game_mode;
+  $("s_mode").value = c.engine_mode || "wsl"; $("s_distro").value = c.engine_distro || "";
+  $("s_cmd").value = c.engine_command || ""; $("s_url").value = c.engine_url || "";
+}
+$("saveSettings").onclick = async () => {
+  const j = await api("/api/config", {
+    games: $("s_games").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean),
+    auto_game_mode: $("s_auto").checked, engine_mode: $("s_mode").value,
+    engine_distro: $("s_distro").value.trim(), engine_command: $("s_cmd").value.trim(), engine_url: $("s_url").value.trim(),
+  });
+  $("settingsMsg").textContent = j.ok ? "Saved." : j.error; $("settingsMsg").className = j.ok ? "ok" : "bad";
+};
+
+// ---------- Status ----------
+async function refresh() {
+  let s;
+  try { s = await api("/api/status"); } catch (e) { $("state").textContent = "AIEN Rig is not running (the black window was closed?)"; $("state").className = "bad"; return; }
+  const e = s.engine || {};
+  const tools = s.tools || {};
+  const missing = Object.keys(tools).filter(k => !tools[k]);
+  $("state").className = "dim";
+  $("state").textContent = "v" + s.version + "  |  engine: " + (e.answering ? "running" + (e.model ? " (" + e.model + ")" : "") : "off") + (s.game && s.game.running ? "  |  playing: " + s.game.running : "") + (missing.length ? "  |  missing: " + missing.join(", ") : "");
+  if (!$("engineStart").disabled) { $("engineState").textContent = e.answering ? "Running" + (e.model ? ": " + e.model : "") : (e.last_error || "Not running"); $("engineState").className = e.answering ? "ok" : "dim"; }
+  $("gameState").textContent = s.game && s.game.running ? "Game running: " + s.game.running : "No game running. Watching for: " + ((s.game && s.game.watching) || []).join(", ");
+  const ul = $("events"); ul.textContent = "";
+  (s.events || []).slice(0, 8).forEach(ev => ul.appendChild(el("li", ev.time_utc.replace("T", " ").replace("Z", " UTC") + "  " + ev.text, "dim")));
+  $("about").textContent = JSON.stringify({ version: s.version, data_folder: s.data_folder, tools: s.tools, engine: s.engine }, null, 2);
+}
+refresh(); loadReceipts(); setInterval(refresh, 5000);
+</script>
+</body>
+</html>
