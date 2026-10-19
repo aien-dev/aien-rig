@@ -1,0 +1,27 @@
+queued 2026-10-19T17:11:21Z
+lock acquired 2026-10-19T17:29:43Z
+selftest rc=0
+audio: 13.7 s, 16000 Hz, 1 ch, codec flac (0.00 s to decode and resample)
+model: /home/drakestapleton/models/whisper-tiny-169d4a43 (4 encoder + 4 decoder layers, d=384), backend Omega, loaded in 0.5 s
+detected language: en
+[00:00:00.000 --> 00:00:05.680] going along slushy country roads and speaking to damp audiences in drafty schoolrooms day after day
+[00:00:05.680 --> 00:00:11.280] of refort tonight. He'll have to put in an appearance at some place of worship on Sunday morning,
+[00:00:11.280 --> 00:00:13.520] and he can come to us immediately afterwards.
+wrote tiny-omega.json (3 segments, language en). 13.7 s of audio in 1.1 s (12.5x real time, model load 0.5 s not counted)
+rc=0
+audio: 13.7 s, 16000 Hz, 1 ch, codec flac (0.00 s to decode and resample)
+model: /home/drakestapleton/models/whisper-large-v3-turbo-41f01f3f (32 encoder + 4 decoder layers, d=1280), backend Omega, loaded in 6.4 s
+detected language: en
+[00:00:00.000 --> 00:00:13.680] going along slushy country roads and speaking to damp audiences in draughty schoolrooms day after day for a fortnight he'll have to put in an appearance at some place of worship on sunday morning and he can come to us immediately afterwards
+wrote turbo-omega.json (1 segments, language en). 13.7 s of audio in 12.2 s (1.1x real time, model load 6.4 s not counted)
+./gpu1.sh: line 8: json: command not found
+turbo rc=127
+rig-listen: cannot open /sample1.flac: No such file or directory (os error 2)
+turbo-decgpu rc=2
+rig-listen: cannot open /1089-134686.mp4: No such file or directory (os error 2)
+1089-134686 rc=2
+rig-listen: cannot open /1188-133604.flac: No such file or directory (os error 2)
+1188-133604 rc=2
+rig-listen: cannot open /2961-960.flac: No such file or directory (os error 2)
+2961-960 rc=2
+done 2026-10-19T17:30:08Z

@@ -83,9 +83,8 @@ checks every size and every LFS sha256 against the Hugging Face listing, and wri
 
 ## Limits (today)
 
-- Greedy decoding at temperature 0 only: no beam search and no temperature fallback, so a
-  rare repetition loop is not retried.
+- Greedy decoding with Whisper's temperature fallback (gzip ratio, average log-probability); no beam search.
 - No word-level timestamps (segment level only).
-- The RTX 5070 GPU path is not built yet: Omega's kernels target the GB10 (sm_121). On the
-  5070 the CPU path runs today.
+- The Omega GPU path runs on the GB10 (sm_121). The RTX 5070 GPU path is not built yet; on the 5070 the CPU path runs today.
 - Opus audio (common in .webm downloads) is not decoded yet.
+- Speed and accuracy measurements are in `evidence/speech/` (receipts per run, model and fixture checksums).

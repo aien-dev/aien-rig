@@ -1,0 +1,23 @@
+Repo: openai/whisper-tiny (https://huggingface.co/openai/whisper-tiny)
+Revision: 169d4a4341b33bc18d8881c4b69c2e104e1cc0af
+License: Apache-2.0 (model card front matter: license: apache-2.0)
+Downloaded and verified: 2026-10-19T16:54:41Z (UTC), nice -n 19 curl, 7 s
+Target: /home/drakestapleton/models/whisper-tiny-169d4a43
+Result: 13 files, 155455649 bytes total. Every size matched. Every LFS file's sha256 matched the Hugging Face API listing.
+Note: small non-LFS files have no published hash in the listing, so only their size was checked.
+Skipped: non-safetensors weight copies (pytorch .bin, TF .h5, Flax .msgpack).
+
+Per-file expected vs actual:
+- .gitattributes: size expected 1438 / actual 1438 (OK); sha256 expected - / actual 20cb01c2bd9b0ae0863422f9da41b20f10f93e009e657f411a41402f51ccf391 (no published hash, size only)
+- README.md: size expected 19787 / actual 19787 (OK); sha256 expected - / actual 57a3bbbbf1e79369e4d1ced790812a1723b43a256c1b43fc70cc2f3339ae9881 (no published hash, size only)
+- added_tokens.json: size expected 34604 / actual 34604 (OK); sha256 expected - / actual 9715fd2243b6f06a5858b5e32950d2853f73dd5bc201aafcf76f5082a2d8acd1 (no published hash, size only)
+- config.json: size expected 1983 / actual 1983 (OK); sha256 expected - / actual ffdccec4f3211f4c63310f2b7098f309fe70f3952cedc5e4d11e43f5b2379b98 (no published hash, size only)
+- generation_config.json: size expected 3747 / actual 3747 (OK); sha256 expected - / actual a5d5325911f16e74001a72fa13d6e208eee51548f994646de1f4b4cc8b35b512 (no published hash, size only)
+- merges.txt: size expected 493869 / actual 493869 (OK); sha256 expected - / actual 2df2990a395e35e8dfbc7511e08c12d56018d8d04691e0133e5d63b21e154dc6 (no published hash, size only)
+- model.safetensors: size expected 151061672 / actual 151061672 (OK); sha256 expected 7ebd0e69e78190ffe1438491fa05cc1f5c1aa3a4c4db3bc1723adbb551ea2395 / actual 7ebd0e69e78190ffe1438491fa05cc1f5c1aa3a4c4db3bc1723adbb551ea2395 (OK)
+- normalizer.json: size expected 52666 / actual 52666 (OK); sha256 expected - / actual bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd (no published hash, size only)
+- preprocessor_config.json: size expected 184990 / actual 184990 (OK); sha256 expected - / actual 9b5cd03a36fbb8a627c64d98a5b5b126ead95a77720723944487311f0110b666 (no published hash, size only)
+- special_tokens_map.json: size expected 2194 / actual 2194 (OK); sha256 expected - / actual e67ae3a0aaa99abcd9f187138e12db1f65c16a14761c50ef10eef2c174a7a691 (no published hash, size only)
+- tokenizer.json: size expected 2480466 / actual 2480466 (OK); sha256 expected - / actual 27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566 (no published hash, size only)
+- tokenizer_config.json: size expected 282683 / actual 282683 (OK); sha256 expected - / actual 2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce (no published hash, size only)
+- vocab.json: size expected 835550 / actual 835550 (OK); sha256 expected - / actual 8f680bba319e01a653d2e8a5dbc17a9157179e0576e6ce74ce0c06356c6e24f9 (no published hash, size only)
