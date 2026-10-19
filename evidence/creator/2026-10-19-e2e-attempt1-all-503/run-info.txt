@@ -1,0 +1,8 @@
+date_utc: 2026-10-19T17:10:36Z
+source_sha: 8c2c463e97ddc1f580dc20174f7fe8c253c5cecd
+host: spark-b87b aarch64
+server: http://127.0.0.1:18091/v1
+server_models: {"object":"list","data":[{"id":"qwen3.8-27b-fp8","object":"model","created":1792418448,"owned_by":"aien/omega-qwen38"}]}
+server_process: 278605 claude -p You are working on the Spark for the aien-dev PR desk. Read /home/drakestapleton/handoffs/2026-10-19-borrowed-ideas/PLAN.md first (rules, Done means, load rule). Read the findings file named below for the idea's source and evidence. Hard rules: own worktree under ~/workspace/ideas/<
+command: rig-create samples/castle-build.srt --server http://127.0.0.1:18091/v1 --chunk-tokens 700 --about "Minecraft survival builds with a time limit" --out $OUT/output
+exit: 1

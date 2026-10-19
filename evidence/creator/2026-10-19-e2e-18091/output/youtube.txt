@@ -1,0 +1,46 @@
+AIEN Rig YouTube helper
+Made from: castle-build.srt (07:58 long)
+Model: qwen3.8-27b-fp8
+
+TITLE IDEAS (pick one)
+1. Building a Full Castle in 3 Days of Minecraft Survival
+2. Can You Build a Castle in 72 Hours?
+3. I Built a 41x41 Castle in Just 3 Days
+4. The Mistake That Ruined My Castle Build
+5. 3 Day Castle Challenge
+
+DESCRIPTION (paste as is; the chapters at the bottom make YouTube show chapters)
+--------
+I challenged myself to build a complete castle in just three days of survival. Watch as I mine thousands of blocks, fight creepers, and race against the clock to finish before nightfall. This video covers the entire process from laying the foundation to testing the redstone drawbridge, including the mistakes I made along the way.
+
+00:00 Challenge Rules and Intro
+00:24 Day One Stone Mining
+02:32 Stone Brick Building Tips
+03:26 Round Corner Towers
+04:41 Constructing The Keep
+05:24 Redstone Drawbridge Test
+06:36 Castle Tour and Recap
+--------
+Chapter check: passes YouTube's rules (starts at 00:00, 3 or more, each 10 seconds or longer).
+
+TAGS (paste into the Tags box)
+minecraft castle build, minecraft survival challenge, minecraft time limit build, minecraft building tutorial, minecraft redstone drawbridge, minecraft stone brick castle, minecraft mining tips, minecraft survival, minecraft speed build, minecraft castle design, minecraft creeper explosion, minecraft foundation layout, minecraft interior design
+
+SHORTS PICKS (clip these from the video)
+1. 01:20 to 01:42 (23 seconds)
+   Hook: "Wait. Wait wait wait. Do you hear that? That hissing?"
+   Why: The sudden creeper explosion creates high stakes and a clear lesson on lighting.
+2. 05:29 to 06:01 (33 seconds)
+   Hook: "The gate is a working drawbridge made with sticky pistons."
+   Why: Shows the tension of a redstone build failing and then succeeding.
+3. 03:47 to 04:05 (19 seconds)
+   Hook: "And I just realized I built the first tower one block off."
+   Why: A relatable moment of frustration and self-correction during the build.
+4. 06:09 to 06:29 (21 seconds)
+   Hook: "Okay the sun is starting to go down on day three."
+   Why: Captures the high-stakes moment of finishing the build before the time limit expires.
+
+FILLER WORDS
+Found 12 (1.5 per minute): uh 5, um 5, the (repeat) 1, you know 1
+captions.clean.srt has them taken out (upload this one to YouTube as your captions).
+captions.marked.srt shows them in {curly brackets}; fillers.txt lists every one with its time, for cutting.

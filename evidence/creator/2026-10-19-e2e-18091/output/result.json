@@ -1,0 +1,380 @@
+{
+  "chapter_problems": [],
+  "chapters": [
+    {
+      "start": 0.0,
+      "time": "00:00",
+      "title": "Challenge Rules and Intro"
+    },
+    {
+      "start": 24.0,
+      "time": "00:24",
+      "title": "Day One Stone Mining"
+    },
+    {
+      "start": 152.0,
+      "time": "02:32",
+      "title": "Stone Brick Building Tips"
+    },
+    {
+      "start": 206.0,
+      "time": "03:26",
+      "title": "Round Corner Towers"
+    },
+    {
+      "start": 281.0,
+      "time": "04:41",
+      "title": "Constructing The Keep"
+    },
+    {
+      "start": 324.0,
+      "time": "05:24",
+      "title": "Redstone Drawbridge Test"
+    },
+    {
+      "start": 396.0,
+      "time": "06:36",
+      "title": "Castle Tour and Recap"
+    }
+  ],
+  "description": "I challenged myself to build a complete castle in just three days of survival. Watch as I mine thousands of blocks, fight creepers, and race against the clock to finish before nightfall. This video covers the entire process from laying the foundation to testing the redstone drawbridge, including the mistakes I made along the way.",
+  "duration_secs": 478.0,
+  "fillers": {
+    "counts": {
+      "the (repeat)": 1,
+      "uh": 5,
+      "um": 5,
+      "you know": 1
+    },
+    "hits": [
+      {
+        "text": "um",
+        "time": 6.3625
+      },
+      {
+        "text": "uh",
+        "time": 18.58
+      },
+      {
+        "text": "uh",
+        "time": 40.863157894736844
+      },
+      {
+        "text": "um",
+        "time": 68.4
+      },
+      {
+        "text": "um",
+        "time": 113.66666666666667
+      },
+      {
+        "text": "uh",
+        "time": 172.53333333333333
+      },
+      {
+        "text": "um",
+        "time": 210.60909090909092
+      },
+      {
+        "text": "the",
+        "time": 222.14736842105265
+      },
+      {
+        "text": "uh",
+        "time": 257.3272727272727
+      },
+      {
+        "text": "um",
+        "time": 313.2947368421053
+      },
+      {
+        "text": "uh",
+        "time": 335.31428571428575
+      },
+      {
+        "text": "you know",
+        "time": 468.4769230769231
+      }
+    ],
+    "per_minute": 1.5,
+    "total": 12
+  },
+  "full_description": "I challenged myself to build a complete castle in just three days of survival. Watch as I mine thousands of blocks, fight creepers, and race against the clock to finish before nightfall. This video covers the entire process from laying the foundation to testing the redstone drawbridge, including the mistakes I made along the way.\n\n00:00 Challenge Rules and Intro\n00:24 Day One Stone Mining\n02:32 Stone Brick Building Tips\n03:26 Round Corner Towers\n04:41 Constructing The Keep\n05:24 Redstone Drawbridge Test\n06:36 Castle Tour and Recap",
+  "model": "qwen3.8-27b-fp8",
+  "notes": [
+    {
+      "end": 151.8,
+      "keywords": [
+        "Minecraft castle build",
+        "survival challenge",
+        "time limit build",
+        "mining tips",
+        "creeper explosion",
+        "foundation layout"
+      ],
+      "moments": [
+        {
+          "end": 103.0,
+          "hook": "Wait. Wait wait wait. Do you hear that? That hissing?",
+          "start": 80.0,
+          "why": "A sudden creeper explosion destroys hours of work, providing a high-stakes reaction and a clear lesson on lighting."
+        },
+        {
+          "end": 66.0,
+          "hook": "Quick tip here, if you are mining a lot of stone, put Efficiency on your pickaxe before anything else.",
+          "start": 52.0,
+          "why": "Offers a practical, time-saving tip for survival builds that is directly relevant to the challenge constraints."
+        }
+      ],
+      "part": 1,
+      "start": 0.0,
+      "summary": "The creator begins a three-day survival challenge to build a full castle, starting with mining the required 2,000 blocks of cobblestone. A creeper explosion in a dark ravine destroys four stacks of stone, forcing a lesson on lighting up mining areas. By the end of day one, the creator is behind schedule with 22 stacks, and day two begins with laying out the 41x41 block foundation.",
+      "topics": [
+        {
+          "start": 0.0,
+          "title": "Challenge Rules & Intro"
+        },
+        {
+          "start": 24.0,
+          "title": "Day One Stone Mining"
+        },
+        {
+          "start": 130.0,
+          "title": "Day Two Foundation Start"
+        }
+      ]
+    },
+    {
+      "end": 308.8,
+      "keywords": [
+        "Minecraft castle build",
+        "stonecutter tips",
+        "Minecraft survival",
+        "castle tower design",
+        "Minecraft building tutorial",
+        "time limit build"
+      ],
+      "moments": [
+        {
+          "end": 175.0,
+          "hook": "Another tip, the stonecutter is way cheaper than crafting stairs and walls on a table.",
+          "start": 160.0,
+          "why": "A practical tip explaining why stonecutters are more resource-efficient than crafting tables."
+        },
+        {
+          "end": 240.0,
+          "hook": "And I just realized I built the first tower one block off. The whole thing is crooked.",
+          "start": 227.0,
+          "why": "A relatable moment of frustration and self-correction during the build process."
+        }
+      ],
+      "part": 2,
+      "start": 152.0,
+      "summary": "The creator fills in the castle outline with stone bricks, emphasizing the efficiency of using a stonecutter over a crafting table. They build the main walls and four round corner towers, encountering a mistake where one tower is built crooked and must be demolished. The segment concludes with the start of the central keep construction on the final day of the build.",
+      "topics": [
+        {
+          "start": 152.0,
+          "title": "Stone Brick Tips"
+        },
+        {
+          "start": 175.0,
+          "title": "Building Castle Walls"
+        },
+        {
+          "start": 206.0,
+          "title": "Round Corner Towers"
+        },
+        {
+          "start": 260.0,
+          "title": "Day Three Plan"
+        },
+        {
+          "start": 281.0,
+          "title": "Constructing The Keep"
+        }
+      ]
+    },
+    {
+      "end": 466.8,
+      "keywords": [
+        "Minecraft castle build",
+        "redstone drawbridge",
+        "Minecraft survival challenge",
+        "time limit build",
+        "Minecraft interior design",
+        "stone brick fireplace",
+        "Minecraft tower design",
+        "redstone repeater fix"
+      ],
+      "moments": [
+        {
+          "end": 362.0,
+          "hook": "The gate is a working drawbridge made with sticky pistons.",
+          "start": 329.0,
+          "why": "Shows the tension of a redstone build failing and then succeeding."
+        },
+        {
+          "end": 390.0,
+          "hook": "Okay the sun is starting to go down on day three.",
+          "start": 369.0,
+          "why": "Captures the high-stakes moment of finishing the build before the time limit expires."
+        }
+      ],
+      "part": 3,
+      "start": 309.0,
+      "summary": "The creator finishes the interior of the castle with a stone brick fireplace and banners. They test a redstone drawbridge, which fails initially due to a misaligned repeater but works on the second attempt. The build is completed just before nightfall, followed by a final tour of the courtyard, towers, and keep.",
+      "topics": [
+        {
+          "start": 309.0,
+          "title": "Interior and Fireplace"
+        },
+        {
+          "start": 324.0,
+          "title": "Redstone Drawbridge Test"
+        },
+        {
+          "start": 369.0,
+          "title": "Final Touches and Completion"
+        },
+        {
+          "start": 396.0,
+          "title": "Castle Tour and Recap"
+        }
+      ]
+    },
+    {
+      "end": 478.0,
+      "keywords": [
+        "Minecraft outro",
+        "subscribe",
+        "thanks for watching",
+        "Minecraft survival",
+        "video ending",
+        "channel update"
+      ],
+      "moments": [],
+      "part": 4,
+      "start": 467.0,
+      "summary": "The video concludes with the creator asking viewers to subscribe to support the channel. The creator then thanks the audience for watching and signs off with a casual goodbye.",
+      "topics": [
+        {
+          "start": 467.0,
+          "title": "Outro and Sign-off"
+        }
+      ]
+    }
+  ],
+  "prompt_version": 1,
+  "requests": [
+    {
+      "busy_retries": 841,
+      "completion_tokens": 422,
+      "finish_reason": "stop",
+      "parsed": true,
+      "prompt_tokens": 1013,
+      "seconds": 1145.0,
+      "step": "notes part 1"
+    },
+    {
+      "busy_retries": 1045,
+      "completion_tokens": 447,
+      "finish_reason": "stop",
+      "parsed": true,
+      "prompt_tokens": 1027,
+      "seconds": 1474.7,
+      "step": "notes part 2"
+    },
+    {
+      "busy_retries": 0,
+      "completion_tokens": 420,
+      "finish_reason": "stop",
+      "parsed": true,
+      "prompt_tokens": 1019,
+      "seconds": 123.0,
+      "step": "notes part 3"
+    },
+    {
+      "busy_retries": 0,
+      "completion_tokens": 133,
+      "finish_reason": "stop",
+      "parsed": true,
+      "prompt_tokens": 386,
+      "seconds": 60.0,
+      "step": "notes part 4"
+    },
+    {
+      "busy_retries": 0,
+      "completion_tokens": 759,
+      "finish_reason": "stop",
+      "parsed": true,
+      "prompt_tokens": 1335,
+      "seconds": 180.3,
+      "step": "final"
+    }
+  ],
+  "shorts": [
+    {
+      "end": 102.8,
+      "end_time": "01:42",
+      "hook": "Wait. Wait wait wait. Do you hear that? That hissing?",
+      "seconds": 22.8,
+      "start": 80.0,
+      "start_time": "01:20",
+      "why": "The sudden creeper explosion creates high stakes and a clear lesson on lighting."
+    },
+    {
+      "end": 361.8,
+      "end_time": "06:01",
+      "hook": "The gate is a working drawbridge made with sticky pistons.",
+      "seconds": 32.8,
+      "start": 329.0,
+      "start_time": "05:29",
+      "why": "Shows the tension of a redstone build failing and then succeeding."
+    },
+    {
+      "end": 245.8,
+      "end_time": "04:05",
+      "hook": "And I just realized I built the first tower one block off.",
+      "seconds": 18.8,
+      "start": 227.0,
+      "start_time": "03:47",
+      "why": "A relatable moment of frustration and self-correction during the build."
+    },
+    {
+      "end": 389.8,
+      "end_time": "06:29",
+      "hook": "Okay the sun is starting to go down on day three.",
+      "seconds": 20.8,
+      "start": 369.0,
+      "start_time": "06:09",
+      "why": "Captures the high-stakes moment of finishing the build before the time limit expires."
+    }
+  ],
+  "source": "castle-build.srt",
+  "source_format": "srt",
+  "tags": [
+    "minecraft castle build",
+    "minecraft survival challenge",
+    "minecraft time limit build",
+    "minecraft building tutorial",
+    "minecraft redstone drawbridge",
+    "minecraft stone brick castle",
+    "minecraft mining tips",
+    "minecraft survival",
+    "minecraft speed build",
+    "minecraft castle design",
+    "minecraft creeper explosion",
+    "minecraft foundation layout",
+    "minecraft interior design"
+  ],
+  "timing_estimated": false,
+  "titles": [
+    "Building a Full Castle in 3 Days of Minecraft Survival",
+    "Can You Build a Castle in 72 Hours?",
+    "I Built a 41x41 Castle in Just 3 Days",
+    "The Mistake That Ruined My Castle Build",
+    "3 Day Castle Challenge"
+  ],
+  "tool": "aien-rig-creator 0.1.0",
+  "warnings": []
+}
