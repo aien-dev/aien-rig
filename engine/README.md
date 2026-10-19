@@ -16,7 +16,7 @@ aien-sovereign-core).
 | format | on the card | speed through HTTP (greedy) | answers vs host reference |
 |---|---|---|---|
 | Qwen3-8B FP8 (Qwen's own file) | 11.6 GiB, context shrunk to 28,928 tokens | 21 to 23 tok/s | 3 of 3 identical, control fails as it must |
-| Qwen3-8B MXFP4 (4 bit, made from the FP8 file) | 9.1 GiB, full 32,768 tokens | 28 to 29 tok/s (first attempt, see below) | see the http-w4-12gib line below |
+| Qwen3-8B MXFP4 (4 bit, made from the FP8 file) | 9.1 GiB, full 32,768 tokens | 27 to 29 tok/s | 3 of 3 identical, control fails as it must |
 
 Chip-level runs (no HTTP): FP8 15.63 tok/s, MXFP4 20.17 tok/s (5.158 GiB of weights on the card), both with 5 of 5
 tokens identical to the host reference and a swapped-KV control that fails as it must.
