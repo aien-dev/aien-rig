@@ -1,0 +1,32 @@
+TEACHING REPLAY 2026-10-22 UTC
+repository: aien-dev/aien-rig
+base_sha: c1f49889e9b53c5507fe22fe6c19ede2ffb51660
+source_sha: 9f9b03f0f3f2b7afd89c202be011e947656d3359
+environment: macOS-26.6.2-arm64-arm-64bit-Mach-O; python 3.14.6
+tool_versions:
+git --version: git version 2.55.0
+node --version: v22.18.0
+jq --version: jq-1.7.1-apple
+openssl version: OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)
+cargo --version: cargo 1.97.1 (c980f4866 2026-06-30)
+qualification: absence check PASS; GPU route not implemented on main
+checkout: fresh git clone --no-hardlinks --branch docs/teaching-20261022 from dedicated cohort clone
+command (from docs/TEACHING.md):
+python3 - <<'PYEX'
+from pathlib import Path
+for part in ('engine','speech','creator','tuner','app'):
+    files=sorted(p.name for p in Path(part).iterdir() if p.is_file())
+    assert files == ['README.md'], (part,files)
+    print(part+': plan only')
+PYEX
+
+stdout:
+engine: plan only
+speech: plan only
+creator: plan only
+tuner: plan only
+app: plan only
+
+stderr:
+
+exit: 0
