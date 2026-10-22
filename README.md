@@ -1,3 +1,7 @@
+<!-- github-native-navigation -->
+[Source](https://github.com/aien-dev/aien-rig) · [Walkthrough](docs/TEACHING.md) · [Replay receipt](docs/teaching-replay-2026-10-22.txt) · [Issues](https://github.com/aien-dev/aien-rig/issues)
+<!-- /github-native-navigation -->
+
 # AIEN Rig
 
 ## How it works and how to reproduce
