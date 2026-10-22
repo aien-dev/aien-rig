@@ -1,0 +1,23 @@
+gate: AIEN_RIG-STRUCTURE
+manifest_version: 2
+owner: aien-rig
+requires:
+  - portable
+inputs:
+  - README.md
+  - tests/gates/
+  - app/
+  - creator/
+  - docs/
+  - engine/
+  - speech/
+  - tuner/
+run:
+  exec: tests/gates/run.sh
+  args: ["structure"]
+expects:
+  exit: 0
+  verdict: PASS
+timeout: 2m
+exactness: EXACT
+cache_scope: portable
