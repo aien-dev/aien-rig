@@ -19,3 +19,8 @@ PYEX
 ```
 
 Expected: five `plan only` lines, exit 0. This is a reproducible absence check, not a GPU benchmark. The negative case is any attempted build from `main`: there is no build manifest. A runnable engine route is blocked until source and fixtures merge. [Replay receipt](teaching-replay-2026-10-22.txt).
+
+
+### Parent fresh-checkout replay
+
+A separate coordination replay is retained in [the parent receipt](parent-replay-2026-10-22.txt). Its scope and observed exit are explicit; source review and final desk qualification remain separate. A recorded absence or expected failing baseline is not a passing implementation.
